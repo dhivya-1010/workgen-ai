@@ -6,6 +6,7 @@ import base64
 import json
 import ollama
 import time
+import re
 
 from notion_client import Client
 from dotenv import load_dotenv
@@ -16,7 +17,7 @@ from google.auth.transport.requests import Request
 from datetime import datetime, timedelta, timezone
 
 
-# ------------------ CONFIG ------------------ #
+# ---------------- CONFIG ---------------- #
 
 load_dotenv()
 
@@ -34,7 +35,7 @@ SCOPES = [
 ]
 
 
-# ------------------ AUTH ------------------ #
+# ---------------- AUTH ---------------- #
 
 def get_credentials():
     creds = None
@@ -56,25 +57,16 @@ def get_credentials():
     return creds
 
 
-# ------------------ AI EXTRACTION ------------------ #
+# ---------------- AI TYPE CLASSIFIER ONLY ---------------- #
 
-def extract_email_intent(email_text):
+def classify_email_type(email_text):
 
     prompt = f"""
-Classify and extract details.
+Classify this email into ONE of:
+meeting, exam, task, interview, payment, none.
 
-Return ONLY valid JSON:
-
-{{
-  "type": "",
-  "title": "",
-  "date": "YYYY-MM-DD",
-  "time": "HH:MM",
-  "priority": "low/medium/high"
-}}
-
-If nothing found:
-{{ "type": "none" }}
+Return ONLY JSON:
+{{ "type": "" }}
 
 Email:
 {email_text}
@@ -86,30 +78,23 @@ Email:
         options={"temperature": 0}
     )
 
-    raw_output = response["message"]["content"].strip()
+    raw = response["message"]["content"].strip()
 
     try:
-        return json.loads(raw_output)
+        return json.loads(raw).get("type", "none")
     except:
-        start = raw_output.find("{")
-        end = raw_output.rfind("}")
-        if start != -1 and end != -1:
-            try:
-                return json.loads(raw_output[start:end+1])
-            except:
-                return {"type": "none"}
-        return {"type": "none"}
+        return "none"
 
 
-# ------------------ INTENT PROCESSOR ------------------ #
+# ---------------- INTENT PROCESSOR ---------------- #
 
-def process_intent(intent, original_text):
-
-    detected_type = intent.get("type", "none")
+def process_email(original_text):
 
     text_lower = original_text.lower()
 
-    # 🔥 Strong fallback logic
+    # ---- TYPE DETECTION ----
+    detected_type = classify_email_type(original_text)
+
     if "exam" in text_lower:
         detected_type = "exam"
     elif "meeting" in text_lower:
@@ -125,42 +110,58 @@ def process_intent(intent, original_text):
         print("No actionable content.")
         return
 
-    if not intent.get("date"):
+    # ---- DATE EXTRACTION ----
+    date_match = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', original_text)
+    if not date_match:
         print("No date found.")
         return
 
     try:
-        if intent.get("time"):
-            dt = datetime.strptime(
-                f"{intent['date']} {intent['time']}",
-                "%Y-%m-%d %H:%M"
-            )
-        else:
-            dt = datetime.strptime(intent["date"], "%Y-%m-%d")
-
-        dt = dt.replace(tzinfo=IST)
-
+        date_obj = datetime.strptime(date_match.group(1), "%d/%m/%Y")
     except:
-        print("Date format issue.")
+        print("Date parsing failed.")
         return
+
+    # ---- TIME EXTRACTION ----
+    time_match = re.search(r'(\d{1,2}:\d{2}\s*(am|pm))', text_lower)
+
+    if time_match:
+        time_obj = datetime.strptime(time_match.group(1), "%I:%M %p").time()
+    else:
+        simple_time = re.search(r'(\d{1,2}\s*(am|pm))', text_lower)
+        if simple_time:
+            hour = int(simple_time.group(1).split()[0])
+            ampm = simple_time.group(2)
+            time_obj = datetime.strptime(f"{hour} {ampm}", "%I %p").time()
+        else:
+            time_obj = datetime.strptime("09:00", "%H:%M").time()
+
+    dt = datetime.combine(date_obj.date(), time_obj).replace(tzinfo=IST)
 
     if dt < datetime.now(IST):
         print("Past date. Skipping.")
         return
 
-    title = intent.get("title") or detected_type.capitalize()
+    # ---- DURATION EXTRACTION ----
+    duration_minutes = 60
+    duration_match = re.search(r'(\d+(\.\d+)?)\s*hour', text_lower)
+    if duration_match:
+        duration_minutes = int(float(duration_match.group(1)) * 60)
+
+    title = detected_type.capitalize()
 
     print(f"🔥 Detected {detected_type} → {title}")
+    print(f"🕒 Scheduled at {dt.strftime('%Y-%m-%d %H:%M')}")
 
-    create_calendar_event(title, dt, detected_type)
+    create_calendar_event(title, dt, detected_type, duration_minutes)
 
 
-# ------------------ CALENDAR ------------------ #
+# ---------------- CALENDAR ---------------- #
 
-def create_calendar_event(title, start_time, intent_type, duration_minutes=60):
+def create_calendar_event(title, start_time, intent_type, duration_minutes):
 
     creds = get_credentials()
-    calendar_service = build('calendar', 'v3', credentials=creds)
+    service = build('calendar', 'v3', credentials=creds)
 
     end_time = start_time + timedelta(minutes=duration_minutes)
 
@@ -172,26 +173,15 @@ def create_calendar_event(title, start_time, intent_type, duration_minutes=60):
         "payment": "6"
     }
 
-    color_id = color_map.get(intent_type, "1")
-
     event = {
         'summary': title,
-        'description': f"Created automatically by AgentX ({intent_type})",
-        'start': {
-            'dateTime': start_time.isoformat(),
-            'timeZone': 'Asia/Kolkata',
-        },
-        'end': {
-            'dateTime': end_time.isoformat(),
-            'timeZone': 'Asia/Kolkata',
-        },
-        'colorId': color_id
+        'description': f"Created by AgentX ({intent_type})",
+        'start': {'dateTime': start_time.isoformat(), 'timeZone': 'Asia/Kolkata'},
+        'end': {'dateTime': end_time.isoformat(), 'timeZone': 'Asia/Kolkata'},
+        'colorId': color_map.get(intent_type, "1")
     }
 
-    calendar_service.events().insert(
-        calendarId='primary',
-        body=event
-    ).execute()
+    service.events().insert(calendarId='primary', body=event).execute()
 
     print("🎨 Added to Google Calendar")
 
@@ -199,9 +189,9 @@ def create_calendar_event(title, start_time, intent_type, duration_minutes=60):
     add_to_notion(title, start_time)
 
 
-# ------------------ NOTION ------------------ #
+# ---------------- NOTION ---------------- #
 
-def add_to_notion(title, start_time):
+def add_to_notion(title, start_time, intent_type):
 
     if not notion:
         return
@@ -218,15 +208,26 @@ def add_to_notion(title, start_time):
                 },
                 "Status": {
                     "select": {"name": "Pending"}
+                },
+                "Source": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": f"Created by AgentX ({intent_type})"
+                            }
+                        }
+                    ]
                 }
             }
         )
+
         print("📝 Added to Notion")
+
     except Exception as e:
         print("Notion Error:", e)
 
 
-# ------------------ LOCAL STORAGE ------------------ #
+# ---------------- LOCAL STORAGE ---------------- #
 
 def save_event_locally(title, start_time):
 
@@ -248,27 +249,26 @@ def save_event_locally(title, start_time):
         json.dump(events, f, indent=2)
 
 
-# ------------------ EMAIL READER ------------------ #
+# ---------------- EMAIL READER ---------------- #
 
 def read_emails():
 
     print("Checking unread emails...")
 
     creds = get_credentials()
-    gmail_service = build('gmail', 'v1', credentials=creds)
+    gmail = build('gmail', 'v1', credentials=creds)
 
-    results = gmail_service.users().messages().list(
+    results = gmail.users().messages().list(
         userId='me',
         labelIds=['UNREAD'],
         maxResults=5
     ).execute()
 
     messages = results.get('messages', [])
-
     print("Unread found:", len(messages))
 
     for msg in messages:
-        msg_data = gmail_service.users().messages().get(
+        msg_data = gmail.users().messages().get(
             userId='me',
             id=msg['id'],
             format='full'
@@ -278,18 +278,13 @@ def read_emails():
 
         for part in parts:
             if part['mimeType'] == 'text/plain':
-                data = part['body']['data']
-                text = base64.urlsafe_b64decode(data).decode()
+                text = base64.urlsafe_b64decode(part['body']['data']).decode()
 
                 print("\nEMAIL:\n", text)
-
-                intent = extract_email_intent(text)
-                print("AI OUTPUT:", json.dumps(intent, indent=2))
-
-                process_intent(intent, text)
+                process_email(text)
 
 
-# ------------------ REMINDERS ------------------ #
+# ---------------- REMINDER ---------------- #
 
 def check_reminders():
 
@@ -309,8 +304,6 @@ def check_reminders():
 
         if not event["reminded"] and reminder_time <= now < event_time:
 
-            print(f"\n🔔 Reminder: {event['title']}")
-
             toaster.show_toast(
                 "🔔 AgentX Reminder",
                 f"{event['title']} at {event_time.strftime('%H:%M')}",
@@ -325,7 +318,7 @@ def check_reminders():
             json.dump(events, f, indent=2)
 
 
-# ------------------ LOOP ------------------ #
+# ---------------- LOOP ---------------- #
 
 def automation_loop():
     print("🤖 AgentX Running")

@@ -16,7 +16,7 @@ from google.auth.transport.requests import Request
 from datetime import datetime, timedelta, timezone
 
 
-# ------------------ LOAD ENV ------------------ #
+# ------------------ CONFIG ------------------ #
 
 load_dotenv()
 
@@ -25,10 +25,7 @@ NOTION_DATABASE_ID = "31461e925a9480d29a9fefc14d9ac655"
 
 notion = Client(auth=NOTION_TOKEN) if NOTION_TOKEN else None
 
-# India timezone
 IST = timezone(timedelta(hours=5, minutes=30))
-
-# Windows notifier
 toaster = ToastNotifier()
 
 SCOPES = [
@@ -61,22 +58,23 @@ def get_credentials():
 
 # ------------------ AI EXTRACTION ------------------ #
 
-def extract_meeting_details(email_text):
+def extract_email_intent(email_text):
 
     prompt = f"""
-Extract meeting details from this email.
+Classify and extract details.
 
-Return ONLY valid JSON in this format:
+Return ONLY valid JSON:
 
 {{
+  "type": "",
   "title": "",
   "date": "YYYY-MM-DD",
   "time": "HH:MM",
-  "duration": ""
+  "priority": "low/medium/high"
 }}
 
-If no meeting is found, return:
-{{ "meeting": "no" }}
+If nothing found:
+{{ "type": "none" }}
 
 Email:
 {email_text}
@@ -99,8 +97,133 @@ Email:
             try:
                 return json.loads(raw_output[start:end+1])
             except:
-                return {"meeting": "no"}
-        return {"meeting": "no"}
+                return {"type": "none"}
+        return {"type": "none"}
+
+
+# ------------------ INTENT PROCESSOR ------------------ #
+
+def process_intent(intent, original_text):
+
+    detected_type = intent.get("type", "none")
+
+    text_lower = original_text.lower()
+
+    # 🔥 Strong fallback logic
+    if "exam" in text_lower:
+        detected_type = "exam"
+    elif "meeting" in text_lower:
+        detected_type = "meeting"
+    elif "interview" in text_lower:
+        detected_type = "interview"
+    elif "assignment" in text_lower or "submission" in text_lower:
+        detected_type = "task"
+    elif "payment" in text_lower or "fees" in text_lower:
+        detected_type = "payment"
+
+    if detected_type == "none":
+        print("No actionable content.")
+        return
+
+    if not intent.get("date"):
+        print("No date found.")
+        return
+
+    try:
+        if intent.get("time"):
+            dt = datetime.strptime(
+                f"{intent['date']} {intent['time']}",
+                "%Y-%m-%d %H:%M"
+            )
+        else:
+            dt = datetime.strptime(intent["date"], "%Y-%m-%d")
+
+        dt = dt.replace(tzinfo=IST)
+
+    except:
+        print("Date format issue.")
+        return
+
+    if dt < datetime.now(IST):
+        print("Past date. Skipping.")
+        return
+
+    title = intent.get("title") or detected_type.capitalize()
+
+    print(f"🔥 Detected {detected_type} → {title}")
+
+    create_calendar_event(title, dt, detected_type)
+
+
+# ------------------ CALENDAR ------------------ #
+
+def create_calendar_event(title, start_time, intent_type, duration_minutes=60):
+
+    creds = get_credentials()
+    calendar_service = build('calendar', 'v3', credentials=creds)
+
+    end_time = start_time + timedelta(minutes=duration_minutes)
+
+    color_map = {
+        "meeting": "1",
+        "task": "2",
+        "exam": "11",
+        "interview": "3",
+        "payment": "6"
+    }
+
+    color_id = color_map.get(intent_type, "1")
+
+    event = {
+        'summary': title,
+        'description': f"Created automatically by AgentX ({intent_type})",
+        'start': {
+            'dateTime': start_time.isoformat(),
+            'timeZone': 'Asia/Kolkata',
+        },
+        'end': {
+            'dateTime': end_time.isoformat(),
+            'timeZone': 'Asia/Kolkata',
+        },
+        'colorId': color_id
+    }
+
+    calendar_service.events().insert(
+        calendarId='primary',
+        body=event
+    ).execute()
+
+    print("🎨 Added to Google Calendar")
+
+    save_event_locally(title, start_time)
+    add_to_notion(title, start_time)
+
+
+# ------------------ NOTION ------------------ #
+
+def add_to_notion(title, start_time):
+
+    if not notion:
+        return
+
+    try:
+        notion.pages.create(
+            parent={"database_id": NOTION_DATABASE_ID},
+            properties={
+                "Name": {
+                    "title": [{"text": {"content": title}}]
+                },
+                "Date": {
+                    "date": {"start": start_time.isoformat()}
+                },
+                "Status": {
+                    "select": {"name": "Pending"}
+                }
+            }
+        )
+        print("📝 Added to Notion")
+    except Exception as e:
+        print("Notion Error:", e)
 
 
 # ------------------ LOCAL STORAGE ------------------ #
@@ -125,120 +248,24 @@ def save_event_locally(title, start_time):
         json.dump(events, f, indent=2)
 
 
-# ------------------ NOTION SYNC ------------------ #
-
-def add_to_notion(meeting, start_time):
-
-    if not notion:
-        print("⚠️ Notion token missing. Skipping Notion sync.")
-        return
-
-    try:
-        notion.pages.create(
-            parent={"database_id": NOTION_DATABASE_ID},
-            properties={
-                "Name": {
-                    "title": [{"text": {"content": meeting["title"]}}]
-                },
-                "Date": {
-                    "date": {"start": start_time.isoformat()}
-                },
-                "Status": {
-                    "select": {"name": "Pending"}
-                },
-                "Source": {
-                    "rich_text": [{"text": {"content": "Created by AgentXX"}}]
-                }
-            }
-        )
-        print("📝 Added to Notion")
-    except Exception as e:
-        print("❌ Notion Error:", e)
-
-
-# ------------------ CALENDAR ------------------ #
-
-def add_to_calendar(meeting):
-
-    if (
-        "meeting" in meeting or
-        not meeting.get("date") or
-        not meeting.get("time")
-    ):
-        print("Invalid meeting data. Skipping.")
-        return
-
-    creds = get_credentials()
-    calendar_service = build('calendar', 'v3', credentials=creds)
-
-    if not meeting.get("title"):
-        meeting["title"] = "Meeting"
-
-    try:
-        start_time = datetime.strptime(
-            f"{meeting['date']} {meeting['time']}",
-            "%Y-%m-%d %H:%M"
-        )
-        start_time = start_time.replace(tzinfo=IST)
-
-    except:
-        print("Time format issue. Skipping event.")
-        return
-
-    if start_time < datetime.now(IST):
-        print("Past date detected. Skipping.")
-        return
-
-    duration_minutes = 60
-    if meeting.get("duration"):
-        try:
-            duration_minutes = int(meeting["duration"])
-        except:
-            pass
-
-    end_time = start_time + timedelta(minutes=duration_minutes)
-
-    event = {
-        'summary': meeting['title'],
-        'description': "Created automatically by AgentXX",
-        'start': {
-            'dateTime': start_time.isoformat(),
-            'timeZone': 'Asia/Kolkata',
-        },
-        'end': {
-            'dateTime': end_time.isoformat(),
-            'timeZone': 'Asia/Kolkata',
-        },
-    }
-
-    calendar_service.events().insert(
-        calendarId='primary',
-        body=event
-    ).execute()
-
-    print("✅ Event added to Google Calendar")
-
-    save_event_locally(meeting["title"], start_time)
-    add_to_notion(meeting, start_time)
-
-
-# ------------------ READ EMAILS ------------------ #
+# ------------------ EMAIL READER ------------------ #
 
 def read_emails():
 
-    print("Fetching emails...")
+    print("Checking unread emails...")
 
     creds = get_credentials()
     gmail_service = build('gmail', 'v1', credentials=creds)
 
     results = gmail_service.users().messages().list(
         userId='me',
+        labelIds=['UNREAD'],
         maxResults=5
     ).execute()
 
     messages = results.get('messages', [])
 
-    print("Messages found:", len(messages))
+    print("Unread found:", len(messages))
 
     for msg in messages:
         msg_data = gmail_service.users().messages().get(
@@ -254,18 +281,15 @@ def read_emails():
                 data = part['body']['data']
                 text = base64.urlsafe_b64decode(data).decode()
 
-                print("\n----- EMAIL -----\n")
-                print(text)
+                print("\nEMAIL:\n", text)
 
-                meeting = extract_meeting_details(text)
+                intent = extract_email_intent(text)
+                print("AI OUTPUT:", json.dumps(intent, indent=2))
 
-                print("\n===== EXTRACTED MEETING DATA =====\n")
-                print(json.dumps(meeting, indent=2))
-
-                add_to_calendar(meeting)
+                process_intent(intent, text)
 
 
-# ------------------ REMINDER SYSTEM ------------------ #
+# ------------------ REMINDERS ------------------ #
 
 def check_reminders():
 
@@ -281,19 +305,11 @@ def check_reminders():
     for event in events:
 
         event_time = datetime.fromisoformat(event["datetime"])
-
-        # ensure timezone-aware
-        if event_time.tzinfo is None:
-            event_time = event_time.replace(tzinfo=IST)
-
         reminder_time = event_time - timedelta(hours=1)
 
         if not event["reminded"] and reminder_time <= now < event_time:
 
-            print("\n🔔 REMINDER 🔔")
-            print(f"Meeting: {event['title']}")
-            print(f"Time: {event_time.strftime('%Y-%m-%d %H:%M')}")
-            print("-----------------------------")
+            print(f"\n🔔 Reminder: {event['title']}")
 
             toaster.show_toast(
                 "🔔 AgentX Reminder",
@@ -309,15 +325,22 @@ def check_reminders():
             json.dump(events, f, indent=2)
 
 
-def reminder_loop():
-    print("\n⏳ Reminder system running...\n")
+# ------------------ LOOP ------------------ #
+
+def automation_loop():
+    print("🤖 AgentX Running")
+    print("Checking every 5 minutes...\n")
+
     while True:
-        check_reminders()
-        time.sleep(60)
+        try:
+            read_emails()
+            check_reminders()
+            print("Cycle done. Sleeping...\n")
+            time.sleep(300)
+        except Exception as e:
+            print("Error:", e)
+            time.sleep(60)
 
-
-# ------------------ MAIN ------------------ #
 
 if __name__ == '__main__':
-    read_emails()
-    reminder_loop()
+    automation_loop()

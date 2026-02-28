@@ -57,7 +57,7 @@ def get_credentials():
     return creds
 
 
-# ---------------- AI TYPE CLASSIFIER ONLY ---------------- #
+# ---------------- AI CLASSIFIER ---------------- #
 
 def classify_email_type(email_text):
 
@@ -78,23 +78,21 @@ Email:
         options={"temperature": 0}
     )
 
-    raw = response["message"]["content"].strip()
-
     try:
-        return json.loads(raw).get("type", "none")
+        return json.loads(response["message"]["content"]).get("type", "none")
     except:
         return "none"
 
 
-# ---------------- INTENT PROCESSOR ---------------- #
+# ---------------- EMAIL PROCESSOR ---------------- #
 
-def process_email(original_text):
+def process_email(original_text, gmail, message_id):
 
     text_lower = original_text.lower()
 
-    # ---- TYPE DETECTION ----
     detected_type = classify_email_type(original_text)
 
+    # Strong fallback detection
     if "exam" in text_lower:
         detected_type = "exam"
     elif "meeting" in text_lower:
@@ -108,23 +106,25 @@ def process_email(original_text):
 
     if detected_type == "none":
         print("No actionable content.")
+        mark_email_read(gmail, message_id)
         return
 
-    # ---- DATE EXTRACTION ----
+    # Date extraction
     date_match = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', original_text)
     if not date_match:
         print("No date found.")
+        mark_email_read(gmail, message_id)
         return
 
     try:
         date_obj = datetime.strptime(date_match.group(1), "%d/%m/%Y")
     except:
         print("Date parsing failed.")
+        mark_email_read(gmail, message_id)
         return
 
-    # ---- TIME EXTRACTION ----
+    # Time extraction
     time_match = re.search(r'(\d{1,2}:\d{2}\s*(am|pm))', text_lower)
-
     if time_match:
         time_obj = datetime.strptime(time_match.group(1), "%I:%M %p").time()
     else:
@@ -140,9 +140,10 @@ def process_email(original_text):
 
     if dt < datetime.now(IST):
         print("Past date. Skipping.")
+        mark_email_read(gmail, message_id)
         return
 
-    # ---- DURATION EXTRACTION ----
+    # Duration
     duration_minutes = 60
     duration_match = re.search(r'(\d+(\.\d+)?)\s*hour', text_lower)
     if duration_match:
@@ -155,6 +156,36 @@ def process_email(original_text):
 
     create_calendar_event(title, dt, detected_type, duration_minutes)
 
+    mark_email_read(gmail, message_id)
+
+
+# ---------------- MARK EMAIL READ ---------------- #
+
+def mark_email_read(gmail, message_id):
+    gmail.users().messages().modify(
+        userId='me',
+        id=message_id,
+        body={'removeLabelIds': ['UNREAD']}
+    ).execute()
+
+
+# ---------------- DUPLICATE CHECK ---------------- #
+
+def event_exists(service, title, start_time):
+
+    events = service.events().list(
+        calendarId='primary',
+        timeMin=start_time.isoformat(),
+        timeMax=(start_time + timedelta(minutes=1)).isoformat(),
+        singleEvents=True
+    ).execute()
+
+    for event in events.get('items', []):
+        if event.get('summary') == title:
+            return True
+
+    return False
+
 
 # ---------------- CALENDAR ---------------- #
 
@@ -162,6 +193,10 @@ def create_calendar_event(title, start_time, intent_type, duration_minutes):
 
     creds = get_credentials()
     service = build('calendar', 'v3', credentials=creds)
+
+    if event_exists(service, title, start_time):
+        print("⚠ Duplicate event skipped")
+        return
 
     end_time = start_time + timedelta(minutes=duration_minutes)
 
@@ -182,11 +217,10 @@ def create_calendar_event(title, start_time, intent_type, duration_minutes):
     }
 
     service.events().insert(calendarId='primary', body=event).execute()
-
     print("🎨 Added to Google Calendar")
 
     save_event_locally(title, start_time)
-    add_to_notion(title, start_time)
+    add_to_notion(title, start_time, intent_type)
 
 
 # ---------------- NOTION ---------------- #
@@ -200,31 +234,15 @@ def add_to_notion(title, start_time, intent_type):
         notion.pages.create(
             parent={"database_id": NOTION_DATABASE_ID},
             properties={
-                "Name": {
-                    "title": [{"text": {"content": title}}]
-                },
-                "Date": {
-                    "date": {"start": start_time.isoformat()}
-                },
-                "Status": {
-                    "select": {"name": "Pending"}
-                },
-                "Source": {
-                    "rich_text": [
-                        {
-                            "text": {
-                                "content": f"Created by AgentX ({intent_type})"
-                            }
-                        }
-                    ]
-                }
+                "Name": {"title": [{"text": {"content": title}}]},
+                "Date": {"date": {"start": start_time.isoformat()}},
+                "Status": {"select": {"name": "Pending"}},
+                "Source": {"rich_text": [{"text": {"content": f"Created by AgentX ({intent_type})"}}]}
             }
         )
-
         print("📝 Added to Notion")
-
-    except Exception as e:
-        print("Notion Error:", e)
+    except:
+        pass
 
 
 # ---------------- LOCAL STORAGE ---------------- #
@@ -268,6 +286,7 @@ def read_emails():
     print("Unread found:", len(messages))
 
     for msg in messages:
+
         msg_data = gmail.users().messages().get(
             userId='me',
             id=msg['id'],
@@ -278,10 +297,14 @@ def read_emails():
 
         for part in parts:
             if part['mimeType'] == 'text/plain':
-                text = base64.urlsafe_b64decode(part['body']['data']).decode()
+
+                text = base64.urlsafe_b64decode(
+                    part['body']['data']
+                ).decode()
 
                 print("\nEMAIL:\n", text)
-                process_email(text)
+
+                process_email(text, gmail, msg['id'])
 
 
 # ---------------- REMINDER ---------------- #

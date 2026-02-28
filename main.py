@@ -1,5 +1,6 @@
 from __future__ import print_function
 from win10toast import ToastNotifier
+from twilio.rest import Client  # ✅ WhatsApp
 
 import os
 import base64
@@ -8,7 +9,7 @@ import ollama
 import time
 import re
 
-from notion_client import Client
+from notion_client import Client as NotionClient
 from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -24,7 +25,12 @@ load_dotenv()
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
 NOTION_DATABASE_ID = "31461e925a9480d29a9fefc14d9ac655"
 
-notion = Client(auth=NOTION_TOKEN) if NOTION_TOKEN else None
+# ✅ Twilio ENV
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_WHATSAPP_TO = os.getenv("TWILIO_WHATSAPP_TO")  # whatsapp:+91xxxx
+
+notion = NotionClient(auth=NOTION_TOKEN) if NOTION_TOKEN else None
 
 IST = timezone(timedelta(hours=5, minutes=30))
 toaster = ToastNotifier()
@@ -33,6 +39,29 @@ SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/calendar'
 ]
+
+
+# ---------------- WHATSAPP ---------------- #
+
+def send_whatsapp_message(text):
+
+    if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN or not TWILIO_WHATSAPP_TO:
+        print("⚠ Twilio credentials missing")
+        return
+
+    try:
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+        message = client.messages.create(
+            from_='whatsapp:+14155238886',  # Twilio Sandbox
+            body=text,
+            to=TWILIO_WHATSAPP_TO
+        )
+
+        print("📲 WhatsApp sent:", message.sid)
+
+    except Exception as e:
+        print("WhatsApp Error:", e)
 
 
 # ---------------- AUTH ---------------- #
@@ -89,7 +118,6 @@ Email:
 def process_email(original_text, gmail, message_id):
 
     text_lower = original_text.lower()
-
     detected_type = classify_email_type(original_text)
 
     # Strong fallback detection
@@ -155,7 +183,6 @@ def process_email(original_text, gmail, message_id):
     print(f"🕒 Scheduled at {dt.strftime('%Y-%m-%d %H:%M')}")
 
     create_calendar_event(title, dt, detected_type, duration_minutes)
-
     mark_email_read(gmail, message_id)
 
 
@@ -241,8 +268,8 @@ def add_to_notion(title, start_time, intent_type):
             }
         )
         print("📝 Added to Notion")
-    except:
-        pass
+    except Exception as e:
+        print("Notion Error:", e)
 
 
 # ---------------- LOCAL STORAGE ---------------- #
@@ -297,13 +324,11 @@ def read_emails():
 
         for part in parts:
             if part['mimeType'] == 'text/plain':
-
                 text = base64.urlsafe_b64decode(
                     part['body']['data']
                 ).decode()
 
                 print("\nEMAIL:\n", text)
-
                 process_email(text, gmail, msg['id'])
 
 
@@ -327,11 +352,24 @@ def check_reminders():
 
         if not event["reminded"] and reminder_time <= now < event_time:
 
+            print(f"\n🔔 Reminder → {event['title']}")
+
+            # Desktop notification
             toaster.show_toast(
                 "🔔 AgentX Reminder",
                 f"{event['title']} at {event_time.strftime('%H:%M')}",
                 duration=10
             )
+
+            # WhatsApp notification
+            whatsapp_text = (
+                f"🔔 AgentX Reminder\n\n"
+                f"{event['title']}\n"
+                f"🕒 {event_time.strftime('%d %b %Y • %H:%M')}\n\n"
+                f"Starts in 1 hour ⏳"
+            )
+
+            send_whatsapp_message(whatsapp_text)
 
             event["reminded"] = True
             updated = True

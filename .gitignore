@@ -1,0 +1,51 @@
+# ---------------------------
+# Python cache
+# ---------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ---------------------------
+# Environment variables
+# ---------------------------
+.env
+
+# ---------------------------
+# Google OAuth / API secrets
+# ---------------------------
+token.json
+credentials.json
+
+# ---------------------------
+# Runtime generated JSON
+# ---------------------------
+events.json
+research.json
+streak.json
+knowledge_base.json
+journal.json
+
+# ---------------------------
+# Virtual environments
+# ---------------------------
+venv/
+env/
+.venv/
+
+# ---------------------------
+# VS Code
+# ---------------------------
+.vscode/
+
+# ---------------------------
+# Temporary files
+# ---------------------------
+tempCodeRunnerFile.py
+*.log
+
+# ---------------------------
+# OS files
+# ---------------------------
+.DS_Store
+Thumbs.db

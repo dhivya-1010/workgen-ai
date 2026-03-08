@@ -2,53 +2,41 @@ import ollama
 import json
 import re
 
-# ---------------- MEETING SUMMARIZER ---------------- #
-
 def summarize_meeting(transcript):
 
     prompt = f"""
 You are a meeting assistant.
 
-Analyze the meeting transcript and produce structured output.
-
-Return ONLY valid JSON in this format:
+Return ONLY valid JSON:
 
 {{
-  "summary": "short paragraph summary",
-  "decisions": ["decision1", "decision2"],
-  "actions": ["person - task"],
-  "next_steps": ["step1", "step2"]
+  "title": "short meeting title"
+  "summary": "short summary",
+  "decisions": [],
+  "actions": [],
+  "next_steps": []
 }}
 
 Meeting Transcript:
 {transcript}
 """
 
-    try:
-        response = ollama.chat(
-            model="gemma:2b",
-            messages=[{"role": "user", "content": prompt}]
-        )
+    response = ollama.chat(
+        model="gemma:2b",
+        messages=[{"role": "user", "content": prompt}]
+    )
 
-        raw_output = response["message"]["content"]
+    output = response["message"]["content"]
 
-        # Try direct JSON parsing
-        try:
-            return json.loads(raw_output)
+    output = output.replace("```json","").replace("```","")
 
-        except json.JSONDecodeError:
-            # Extract JSON if model adds extra text
-            match = re.search(r"\{[\s\S]*\}", raw_output)
+    match = re.search(r"\{[\s\S]*\}", output)
 
-            if match:
-                return json.loads(match.group())
+    if match:
+        return json.loads(match.group())
 
-    except Exception as e:
-        print("❌ Summarization error:", e)
-
-    # fallback result
     return {
-        "summary": "Could not generate summary",
+        "summary": "Failed to summarize",
         "decisions": [],
         "actions": [],
         "next_steps": []

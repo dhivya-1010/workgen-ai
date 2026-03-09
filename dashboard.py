@@ -6,6 +6,8 @@ from streamlit_autorefresh import st_autorefresh
 from notion_client import Client
 from dotenv import load_dotenv
 import os
+import sys
+from pathlib import Path
 <<<<<<< HEAD
 import io
 
@@ -14,8 +16,12 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
+BACKEND_DIR = Path(__file__).resolve().parent / "agentX-backend"
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
 # Research Engine
-from research_engine import generate_research_package, generate_research_timeline
+from researcher.research_engine import generate_research_package, generate_research_timeline
 =======
 >>>>>>> 6ff4492cc7dec2543ea6bfbda37ac433cf8c4580
 

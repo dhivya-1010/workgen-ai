@@ -1,5 +1,12 @@
-from meeting_summarizer import summarize_meeting
-from notion_writer import write_summary
+import sys
+from pathlib import Path
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
+from meeting.meeting_summarizer import summarize_meeting
+from meeting.notion_writer import write_summary
 
 transcript = """
 Alice: We need to finish the AgentX meeting summarizer.

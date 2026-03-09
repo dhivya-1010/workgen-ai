@@ -108,52 +108,55 @@ def reminder_strategy(stress):
         return "Motivational reminders enabled"
 
 
-# ---------------- MAIN PROGRAM ---------------- #
+# ---------------- RUN FUNCTION (IMPORTANT) ---------------- #
 
-print("==== AgentX Private AI Journal ====\n")
+def run_journal_ai():
 
-entry = input("Write your journal entry:\n\n")
+    print("==== AgentX Private AI Journal ====\n")
 
-emotion_data = analyze_emotion(entry)
+    entry = input("Write your journal entry:\n\n")
 
-print("\nEmotion Analysis")
-print("-------------------")
+    emotion_data = analyze_emotion(entry)
 
-print("Emotion:", emotion_data["emotion"])
-print("Stress Level:", emotion_data["stress_level"])
-print("Focus Level:", emotion_data["focus_level"])
-print("Suggestion:", emotion_data["suggestion"])
+    print("\nEmotion Analysis")
+    print("-------------------")
 
-
-log_mood(emotion_data)
-
-
-tasks = [
-    {"task":"Finish research paper","priority":1,"difficulty":9},
-    {"task":"Reply to emails","priority":3,"difficulty":2},
-    {"task":"Prepare presentation slides","priority":2,"difficulty":6},
-    {"task":"Read research articles","priority":4,"difficulty":3}
-]
+    print("Emotion:", emotion_data["emotion"])
+    print("Stress Level:", emotion_data["stress_level"])
+    print("Focus Level:", emotion_data["focus_level"])
+    print("Suggestion:", emotion_data["suggestion"])
 
 
-print("\nOriginal Task List")
-print("-------------------")
-
-for t in tasks:
-    print("-", t["task"])
+    log_mood(emotion_data)
 
 
-optimized = adjust_tasks(tasks, emotion_data["stress_level"])
+    tasks = [
+        {"task":"Finish research paper","priority":1,"difficulty":9},
+        {"task":"Reply to emails","priority":3,"difficulty":2},
+        {"task":"Prepare presentation slides","priority":2,"difficulty":6},
+        {"task":"Read research articles","priority":4,"difficulty":3}
+    ]
 
 
-print("\nOptimized Task Order")
-print("-------------------")
+    print("\nOriginal Task List")
+    print("-------------------")
 
-for t in optimized:
-    print("-", t["task"])
+    for t in tasks:
+        print("-", t["task"])
 
 
-print("\nReminder Strategy")
-print("-------------------")
+    optimized = adjust_tasks(tasks, emotion_data["stress_level"])
 
-print(reminder_strategy(emotion_data["stress_level"]))
+
+    print("\nOptimized Task Order")
+    print("-------------------")
+
+    for t in optimized:
+        print("-", t["task"])
+
+
+    print("\nReminder Strategy")
+    print("-------------------")
+
+    print(reminder_strategy(emotion_data["stress_level"]))
+    

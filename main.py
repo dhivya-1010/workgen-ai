@@ -24,6 +24,34 @@ from meeting_summarizer import summarize_meeting
 from knowledge_hub import store_meeting
 
 
+# -------- ADDITIONAL MODULES (NEW) -------- #
+
+try:
+    from research_engine import run_research_engine
+except:
+    run_research_engine = None
+
+try:
+    from journal_ai import run_journal_ai
+except:
+    run_journal_ai = None
+
+try:
+    from meeting_pipeline import run_meeting_pipeline
+except:
+    run_meeting_pipeline = None
+
+try:
+    from live_transcript import run_live_transcription
+except:
+    run_live_transcription = None
+
+try:
+    from dashboard import run_dashboard
+except:
+    run_dashboard = None
+
+
 # ---------------- CONFIG ---------------- #
 
 load_dotenv()
@@ -359,13 +387,7 @@ def check_reminders():
                 threaded=True
             )
 
-            whatsapp_text = (
-                f"🔔 AgentX Reminder\n\n"
-                f"{event['title']}\n"
-                f"🕒 {event_time.strftime('%d %b %Y • %H:%M')}"
-            )
-
-            send_whatsapp_message(whatsapp_text)
+            send_whatsapp_message(event['title'])
 
             event["reminded"] = True
 
@@ -423,7 +445,6 @@ def automation_loop():
         try:
 
             read_emails()
-
             check_reminders()
 
             print("Cycle done. Sleeping...\n")
@@ -433,27 +454,60 @@ def automation_loop():
         except Exception as e:
 
             print("Error:", e)
-
             time.sleep(60)
 
 
-# ---------------- MAIN ---------------- #
+# ---------------- MAIN MENU (NEW) ---------------- #
 
-if __name__ == "__main__":
+def main_menu():
 
-    print("""
+    while True:
+
+        print("""
 AgentX System
 
-1 → Run Email Automation
-2 → Run Meeting Summarizer
+1 → Email Automation
+2 → Meeting Summarizer
+3 → Research Copilot
+4 → Journal AI
+5 → Meeting Pipeline
+6 → Live Meeting Transcription
+7 → Dashboard
+8 → Exit
 """)
 
-    choice = input("Select option: ")
+        choice = input("Select option: ")
 
-    if choice == "1":
+        if choice == "1":
+            automation_loop()
 
-        automation_loop()
+        elif choice == "2":
+            run_meeting_summarizer()
 
-    elif choice == "2":
+        elif choice == "3" and run_research_engine:
+            run_research_engine()
 
-        run_meeting_summarizer()
+        elif choice == "4" and run_journal_ai:
+            run_journal_ai()
+
+        elif choice == "5" and run_meeting_pipeline:
+            run_meeting_pipeline()
+
+        elif choice == "6" and run_live_transcription:
+            run_live_transcription()
+
+        elif choice == "7" and run_dashboard:
+            run_dashboard()
+
+        elif choice == "8":
+            print("Exiting AgentX...")
+            break
+
+        else:
+            print("Module not available")
+
+
+# ---------------- START ---------------- #
+
+if __name__ == "__main__":
+    main_menu()

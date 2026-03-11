@@ -1,10 +1,30 @@
-import ollama
+import ast
 import json
 import re
 from datetime import date
 
+import ollama
+
 
 # ---------------- EMOTION ANALYZER ---------------- #
+
+def _normalize_emotion_data(data):
+
+    if not isinstance(data, dict):
+        return None
+
+    def _to_int(value, default):
+        try:
+            return int(value)
+        except Exception:
+            return default
+
+    return {
+        "emotion": str(data.get("emotion", "unknown")),
+        "stress_level": _to_int(data.get("stress_level", 5), 5),
+        "focus_level": _to_int(data.get("focus_level", 5), 5),
+        "suggestion": str(data.get("suggestion", "Unable to analyze emotion")),
+    }
 
 def analyze_emotion(text):
 
@@ -33,13 +53,28 @@ Journal Entry:
 
     raw = response["message"]["content"]
 
-    try:
-        return json.loads(raw)
+    candidates = [raw]
 
-    except:
-        match = re.search(r"\{[\s\S]*\}", raw)
-        if match:
-            return json.loads(match.group())
+    match = re.search(r"\{[\s\S]*\}", raw)
+    if match:
+        candidates.append(match.group())
+
+    for candidate in candidates:
+        try:
+            parsed = json.loads(candidate)
+            normalized = _normalize_emotion_data(parsed)
+            if normalized:
+                return normalized
+        except Exception:
+            pass
+
+        try:
+            parsed = ast.literal_eval(candidate)
+            normalized = _normalize_emotion_data(parsed)
+            if normalized:
+                return normalized
+        except Exception:
+            pass
 
     return {
         "emotion":"unknown",

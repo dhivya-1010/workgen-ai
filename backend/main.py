@@ -20,34 +20,41 @@ from google.auth.transport.requests import Request
 
 from datetime import datetime, timedelta, timezone
 
-from meeting_summarizer import summarize_meeting
-from knowledge_hub import store_meeting
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from backend.meeting_summarizer import summarize_meeting
+from backend.knowledge_hub import store_meeting
 
 
 # -------- ADDITIONAL MODULES (NEW) -------- #
 
 try:
-    from research_engine import run_research_engine
+    from backend.research_engine import run_research_engine
 except:
     run_research_engine = None
 
 try:
-    from journal_ai import run_journal_ai
+    from backend.journal_ai import run_journal_ai
 except:
     run_journal_ai = None
 
 try:
-    from meeting_pipeline import run_meeting_pipeline
+    from backend.meeting_pipeline import run_meeting_pipeline
 except:
     run_meeting_pipeline = None
 
 try:
-    from live_transcript import run_live_transcription
+    from backend.live_transcript import run_live_transcription
 except:
     run_live_transcription = None
 
 try:
-    from dashboard import run_dashboard
+    from backend.dashboard import run_dashboard
 except:
     run_dashboard = None
 

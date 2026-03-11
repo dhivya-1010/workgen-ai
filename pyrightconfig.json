@@ -1,5 +1,5 @@
 {
-  "include": ["main.py", "dashboard.py", "agentX-backend"],
+  "include": ["backend"],
   "exclude": [
     "**/node_modules",
     "**/__pycache__",
@@ -9,7 +9,7 @@
   "executionEnvironments": [
     {
       "root": ".",
-      "extraPaths": ["agentX-backend"]
+      "extraPaths": ["backend"]
     }
   ]
 }

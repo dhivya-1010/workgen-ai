@@ -20,41 +20,35 @@ from google.auth.transport.requests import Request
 
 from datetime import datetime, timedelta, timezone
 
-import sys
-from pathlib import Path
+# ---------------- CORE MODULES ---------------- #
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+from meeting_summarizer import summarize_meeting
+from knowledge_hub import store_meeting
 
-from backend.meeting_summarizer import summarize_meeting
-from backend.knowledge_hub import store_meeting
-
-
-# -------- ADDITIONAL MODULES (NEW) -------- #
+# ---------------- ADDITIONAL MODULES (SAFE IMPORT) ---------------- #
 
 try:
-    from backend.research_engine import run_research_engine
+    from research_engine import run_research_engine
 except:
     run_research_engine = None
 
 try:
-    from backend.journal_ai import run_journal_ai
+    from journal_ai import run_journal_ai
 except:
     run_journal_ai = None
 
 try:
-    from backend.meeting_pipeline import run_meeting_pipeline
+    from meeting_pipeline import run_meeting_pipeline
 except:
     run_meeting_pipeline = None
 
 try:
-    from backend.live_transcript import run_live_transcription
+    from live_transcript import run_live_transcription
 except:
     run_live_transcription = None
 
 try:
-    from backend.dashboard import run_dashboard
+    from dashboard import run_dashboard
 except:
     run_dashboard = None
 
@@ -91,7 +85,6 @@ def send_whatsapp_message(text):
         return
 
     try:
-
         client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
         message = client.messages.create(
@@ -121,7 +114,6 @@ def get_credentials():
             creds.refresh(Request())
 
         else:
-
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
 
@@ -183,7 +175,6 @@ def event_exists(service, title, start_time):
     ).execute()
 
     for event in events.get('items', []):
-
         if event.get('summary') == title:
             return True
 
@@ -201,10 +192,8 @@ def save_event_locally(title, start_time):
     }
 
     if os.path.exists("events.json"):
-
         with open("events.json", "r") as f:
             events = json.load(f)
-
     else:
         events = []
 
@@ -222,7 +211,6 @@ def add_to_notion(title, start_time):
         return
 
     try:
-
         notion.pages.create(
             parent={"database_id": NOTION_DATABASE_ID},
             properties={
@@ -244,11 +232,9 @@ def add_to_notion(title, start_time):
 def create_calendar_event(title, start_time, intent_type, duration_minutes):
 
     creds = get_credentials()
-
     service = build('calendar', 'v3', credentials=creds)
 
     if event_exists(service, title, start_time):
-
         print("⚠ Duplicate event skipped")
         return
 
@@ -266,7 +252,6 @@ def create_calendar_event(title, start_time, intent_type, duration_minutes):
     print("🎨 Added to Google Calendar")
 
     save_event_locally(title, start_time)
-
     add_to_notion(title, start_time)
 
 
@@ -280,19 +265,16 @@ def process_email(original_text, gmail, message_id):
 
     if "exam" in text_lower:
         detected_type = "exam"
-
     elif "meeting" in text_lower:
         detected_type = "meeting"
 
     if detected_type == "none":
-
         mark_email_read(gmail, message_id)
         return
 
     date_match = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', original_text)
 
     if not date_match:
-
         mark_email_read(gmail, message_id)
         return
 
@@ -302,18 +284,12 @@ def process_email(original_text, gmail, message_id):
 
     if time_match:
         time_obj = datetime.strptime(time_match.group(1), "%I:%M %p").time()
-
     else:
         time_obj = datetime.strptime("09:00", "%H:%M").time()
 
     dt = datetime.combine(date_obj.date(), time_obj).replace(tzinfo=IST)
 
     duration_minutes = 60
-
-    duration_match = re.search(r'(\d+(\.\d+)?)\s*hour', text_lower)
-
-    if duration_match:
-        duration_minutes = int(float(duration_match.group(1)) * 60)
 
     title = detected_type.capitalize()
 
@@ -329,7 +305,6 @@ def process_email(original_text, gmail, message_id):
 def read_emails():
 
     creds = get_credentials()
-
     gmail = build('gmail', 'v1', credentials=creds)
 
     results = gmail.users().messages().list(
@@ -377,12 +352,9 @@ def check_reminders():
 
     now = datetime.now(IST)
 
-    updated = False
-
     for event in events:
 
         event_time = datetime.fromisoformat(event["datetime"])
-
         reminder_time = event_time - timedelta(hours=1)
 
         if not event["reminded"] and reminder_time <= now < event_time:
@@ -398,73 +370,40 @@ def check_reminders():
 
             event["reminded"] = True
 
-            updated = True
-
-    if updated:
-
-        with open("events.json", "w") as f:
-            json.dump(events, f, indent=2)
+    with open("events.json", "w") as f:
+        json.dump(events, f, indent=2)
 
 
 # ---------------- MEETING SUMMARIZER ---------------- #
 
-def run_meeting_summarizer():
-
-    print("\n===== AI Meeting Summarizer =====\n")
-
-    transcript = input("Enter meeting transcript:\n")
-
+# For UI
+def run_meeting_summarizer(transcript):
     result = summarize_meeting(transcript)
-
-    if not result:
-        print("❌ Failed to summarize meeting.")
-        return
-
-    print("\n===== MEETING SUMMARY =====")
-
-    print("\nSummary:")
-    print(result.get("summary", ""))
-
-    print("\nDecisions:")
-    for d in result.get("decisions", []):
-        print("-", d)
-
-    print("\nAction Items:")
-    for a in result.get("actions", []):
-        print("-", a)
-
-    print("\nNext Steps:")
-    for s in result.get("next_steps", []):
-        print("-", s)
-
     store_meeting(result)
+    return result
+
+
+# For terminal
+def run_meeting_summarizer_cli():
+    transcript = input("Enter meeting transcript:\n")
+    result = run_meeting_summarizer(transcript)
+    print(result)
 
 
 # ---------------- LOOP ---------------- #
 
 def automation_loop():
 
-    print("🤖 AgentX Running")
-    print("Checking every 5 minutes...\n")
+    print("🤖 AgentX Running...\n")
 
     while True:
-
-        try:
-
-            read_emails()
-            check_reminders()
-
-            print("Cycle done. Sleeping...\n")
-
-            time.sleep(300)
-
-        except Exception as e:
-
-            print("Error:", e)
-            time.sleep(60)
+        read_emails()
+        check_reminders()
+        print("Cycle done...\n")
+        time.sleep(300)
 
 
-# ---------------- MAIN MENU (NEW) ---------------- #
+# ---------------- MAIN MENU ---------------- #
 
 def main_menu():
 
@@ -478,7 +417,7 @@ AgentX System
 3 → Research Copilot
 4 → Journal AI
 5 → Meeting Pipeline
-6 → Live Meeting Transcription
+6 → Live Transcription
 7 → Dashboard
 8 → Exit
 """)
@@ -511,7 +450,7 @@ AgentX System
             break
 
         else:
-            print("Module not available")
+            print("⚠ Module not available")
 
 
 # ---------------- START ---------------- #

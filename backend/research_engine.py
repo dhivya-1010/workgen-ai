@@ -52,7 +52,7 @@ Only JSON. No extra text.
 
     try:
         response = client.models.generate_content(
-            model=os.getenv("GEMINI_MODEL", "models/gemini-2.5-flash"),
+            model=os.getenv("GEMINI_MODEL", "models/gemini-2.5-flash-lite"),
             contents=prompt
         )
         raw = response.text or ""

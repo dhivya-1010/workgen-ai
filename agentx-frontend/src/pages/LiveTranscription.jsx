@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ResultCard from "../components/ResultCard";
+import NextRecommendedStepCard from "../components/NextRecommendedStepCard";
 
 const SpeechRecognitionCtor =
   typeof window !== "undefined"
@@ -376,6 +377,22 @@ export default function LiveTranscription({ theme }) {
           </div>
         </ResultCard>
       </div>
+
+      {displayTranscript.trim().length > 0 && (
+        <NextRecommendedStepCard
+          stepNumber="Step 1 of 3"
+          icon="🧠"
+          title="Next Recommended Step: Meeting Intelligence"
+          description="Transfer this live recorded transcript directly into Meeting Intelligence to extract an executive summary, decisions, and action items."
+          targetPath="/meeting"
+          targetLabel="Proceed to Meeting Intelligence →"
+          stateData={{ transcript: displayTranscript }}
+          dataPreview={
+            displayTranscript.slice(0, 90) + (displayTranscript.length > 90 ? "..." : "")
+          }
+          theme={theme}
+        />
+      )}
     </div>
   );
 }

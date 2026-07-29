@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ApiResponsePanel from "../components/ApiResponsePanel";
 import ResultCard from "../components/ResultCard";
+import NextRecommendedStepCard from "../components/NextRecommendedStepCard";
 import { summarizeMeeting } from "../services/api";
 import { downloadPdf, shareViaEmail } from "../utils/exportPdf";
 import { usePageState } from "../context/PageStateContext";
@@ -27,6 +29,7 @@ function renderItems(items, theme) {
 }
 
 export default function MeetingIntelligence({ theme }) {
+  const location = useLocation();
   const [pageState, setPageState] = usePageState("meeting-intelligence");
   const transcript = pageState?.transcript ?? "";
   const result = pageState?.result ?? null;
@@ -34,6 +37,12 @@ export default function MeetingIntelligence({ theme }) {
   const setResult = (v) => setPageState((s) => ({ ...s, result: v }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (location.state?.transcript) {
+      setTranscript(location.state.transcript);
+    }
+  }, [location.state]);
 
   const submit = async () => {
     if (!transcript.trim()) {
@@ -163,6 +172,29 @@ export default function MeetingIntelligence({ theme }) {
           {renderItems(result?.next_steps, theme)}
         </ResultCard>
       </div>
+
+      {result && (
+        <NextRecommendedStepCard
+          stepNumber="Step 2 of 3"
+          icon="🗃️"
+          title="Next Recommended Step: Knowledge Hub"
+          description="Search stored entries in the Knowledge Hub for related historical context or verify if this topic is already documented."
+          targetPath="/knowledge-hub"
+          targetLabel="Proceed to Knowledge Hub →"
+          stateData={{
+            query:
+              typeof result.summary === "string" && result.summary.trim()
+                ? result.summary.slice(0, 50)
+                : "Meeting summary",
+          }}
+          dataPreview={
+            typeof result.summary === "string"
+              ? result.summary.slice(0, 90) + "..."
+              : "Meeting intelligence results generated"
+          }
+          theme={theme}
+        />
+      )}
 
       {/* <ApiResponsePanel data={result} theme={theme} /> */}
     </div>

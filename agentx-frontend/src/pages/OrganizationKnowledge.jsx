@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import ResultCard from '../components/ResultCard'
+import NextRecommendedStepCard from '../components/NextRecommendedStepCard'
 import {
   uploadOrganizationDocument,
   askOrganizationQuestion,
@@ -245,6 +246,33 @@ export default function OrganizationKnowledge({ theme }) {
     </div>
   </ResultCard>
 )}
+
+      {(status?.has_documents || uploadResult?.success || answer) && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <NextRecommendedStepCard
+            badge="Org Knowledge Handoff"
+            icon="💡"
+            title="View Org Knowledge Insights"
+            description="Explore AI insights filtered specifically for official organization policies and SOPs."
+            targetPath="/insights"
+            targetLabel="Proceed to Insight Agent →"
+            stateData={{ sourceFilter: "Knowledge" }}
+            dataPreview='Filter Insights by Source: "Knowledge"'
+            theme={theme}
+          />
+          <NextRecommendedStepCard
+            badge="Org Knowledge Handoff"
+            icon="🗃️"
+            title="Search Knowledge Hub"
+            description="Search and cross-reference organization snippets with the unified Knowledge Hub."
+            targetPath="/knowledge-hub"
+            targetLabel="Proceed to Knowledge Hub →"
+            stateData={{ query: question || "SOP policy" }}
+            dataPreview={`Query: "${question || "SOP policy"}"`}
+            theme={theme}
+          />
+        </div>
+      )}
     </div>
   )
 }

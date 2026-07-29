@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ResultCard from "../components/ResultCard";
+import NextRecommendedStepCard from "../components/NextRecommendedStepCard";
 import { searchKnowledgeHub } from "../services/api";
 
 export default function KnowledgeHub({ theme }) {
+  const location = useLocation();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [entries, setEntries] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const dark = theme === "dark";
 
-  const handleSearch = async () => {
-    const trimmed = query.trim();
-
+  const executeSearch = useCallback(async (searchTerm) => {
+    const trimmed = searchTerm.trim();
     if (!trimmed) {
       setError("Please enter a search term.");
       return;
@@ -24,12 +27,25 @@ export default function KnowledgeHub({ theme }) {
     try {
       const response = await searchKnowledgeHub(trimmed);
       setEntries(response?.entries || []);
+      setHasSearched(true);
     } catch (err) {
       setError(err.message || "Unable to search the knowledge hub.");
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  const handleSearch = () => {
+    executeSearch(query);
   };
+
+  useEffect(() => {
+    if (location.state?.query) {
+      const passedQuery = location.state.query;
+      setQuery(passedQuery);
+      executeSearch(passedQuery);
+    }
+  }, [location.state, executeSearch]);
 
   return (
     <div className="space-y-6">
@@ -56,6 +72,12 @@ export default function KnowledgeHub({ theme }) {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                handleSearch();
+              }
+            }}
             placeholder="Search the knowledge hub..."
             className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition ${
               dark
@@ -109,6 +131,20 @@ export default function KnowledgeHub({ theme }) {
           ))
         )}
       </div>
+
+      {(hasSearched || entries.length > 0 || query.trim().length > 0) && (
+        <NextRecommendedStepCard
+          stepNumber="Step 3 of 3"
+          icon="💡"
+          title="Next Recommended Step: Insight Agent"
+          description="Synthesize cross-channel insights and explore AI recommendations compiled from Meeting, Email, and Knowledge bases."
+          targetPath="/insights"
+          targetLabel="Proceed to Insight Agent →"
+          stateData={{ sourceFilter: "Meeting", search: query }}
+          dataPreview={`Filter Insights by Source: "Meeting" & Search: "${query}"`}
+          theme={theme}
+        />
+      )}
     </div>
   );
 }

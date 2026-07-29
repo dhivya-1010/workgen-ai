@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ResultCard from "../components/ResultCard";
 import { getInsights } from "../services/api";
 
@@ -128,6 +129,7 @@ function StatCard({ icon, label, value, dark }) {
 // ---------------------------------------------------------------------------
 
 export default function InsightAgent({ theme }) {
+  const location = useLocation();
   const dark = theme === "dark";
 
   const [insights, setInsights] = useState([]);
@@ -138,6 +140,15 @@ export default function InsightAgent({ theme }) {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
+
+  useEffect(() => {
+    if (location.state?.sourceFilter) {
+      setSourceFilter(location.state.sourceFilter);
+    }
+    if (location.state?.search) {
+      setSearch(location.state.search);
+    }
+  }, [location.state]);
 
   // ------ Load insights ------
   const loadInsights = async () => {

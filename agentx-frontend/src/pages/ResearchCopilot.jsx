@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ApiResponsePanel from "../components/ApiResponsePanel";
 import ResultCard from "../components/ResultCard";
+import NextRecommendedStepCard from "../components/NextRecommendedStepCard";
 import { generateResearch } from "../services/api";
 import { downloadPdf, shareViaEmail } from "../utils/exportPdf";
 import { usePageState } from "../context/PageStateContext";
@@ -145,6 +147,7 @@ function renderList(items, theme) {
 }
 
 export default function ResearchCopilot({ theme }) {
+  const location = useLocation();
   const [pageState, setPageState] = usePageState("research-copilot");
   const topic = pageState?.topic ?? "";
   const result = pageState?.result ?? null;
@@ -152,6 +155,12 @@ export default function ResearchCopilot({ theme }) {
   const setResult = (v) => setPageState((s) => ({ ...s, result: v }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (location.state?.topic) {
+      setTopic(location.state.topic);
+    }
+  }, [location.state]);
 
   const submit = async () => {
     if (!topic.trim()) {
@@ -325,6 +334,33 @@ export default function ResearchCopilot({ theme }) {
       >
         {renderList(result?.citations, theme)}
       </ResultCard>
+
+      {result && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <NextRecommendedStepCard
+            badge="Research Handoff"
+            icon="🗃️"
+            title="Search Knowledge Hub"
+            description="Query saved knowledge entries and documents matching your generated research topic."
+            targetPath="/knowledge-hub"
+            targetLabel="Proceed to Knowledge Hub →"
+            stateData={{ query: topic }}
+            dataPreview={`Query: "${topic}"`}
+            theme={theme}
+          />
+          <NextRecommendedStepCard
+            badge="Research Handoff"
+            icon="💡"
+            title="Explore AI Insights"
+            description="View organizational and analytical AI insights matching your research area."
+            targetPath="/insights"
+            targetLabel="Proceed to Insight Agent →"
+            stateData={{ search: topic }}
+            dataPreview={`Search Insights for: "${topic}"`}
+            theme={theme}
+          />
+        </div>
+      )}
 
       {/* <ApiResponsePanel data={result} theme={theme} /> */}
     </div>

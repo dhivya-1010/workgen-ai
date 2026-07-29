@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import ApiResponsePanel from '../components/ApiResponsePanel'
 import ResultCard from '../components/ResultCard'
+import NextRecommendedStepCard from '../components/NextRecommendedStepCard'
 import { runEmailAction, scanEmails } from '../services/api'
 import { shareViaEmail } from '../utils/exportPdf'
 import { usePageState } from '../context/PageStateContext'
@@ -245,6 +246,33 @@ export default function EmailIntelligence({ theme }) {
           </div>
         </ResultCard>
       </div>
+
+      {payload.emails.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <NextRecommendedStepCard
+            badge="Email Handoff"
+            icon="💡"
+            title="View Email Insights"
+            description="Inspect AI-analyzed insights generated specifically from your classified email inbox signals."
+            targetPath="/insights"
+            targetLabel="Proceed to Insight Agent →"
+            stateData={{ sourceFilter: "Email" }}
+            dataPreview={`Filter Insights by Source: "Email" (${payload.emails.length} signals)`}
+            theme={theme}
+          />
+          <NextRecommendedStepCard
+            badge="Email Handoff"
+            icon="🗃️"
+            title="Search Knowledge Hub"
+            description="Cross-reference email topics and signals with saved knowledge entries and document archives."
+            targetPath="/knowledge-hub"
+            targetLabel="Proceed to Knowledge Hub →"
+            stateData={{ query: payload.emails[0]?.subject || "Email Inbox" }}
+            dataPreview={`Query: "${payload.emails[0]?.subject || "Email Inbox"}"`}
+            theme={theme}
+          />
+        </div>
+      )}
 
       {/* <ApiResponsePanel data={rawResponse} theme={theme} /> */}
     </div>

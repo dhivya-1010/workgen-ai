@@ -24,4 +24,4 @@ def store_meeting(meeting_data, source="Meeting Intelligence"):
     with open(DB_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
-    print(f"✅ Meeting stored in Knowledge Hub (Source: {source})")
+    print(f"✅ Meeting stored in Knowledge Hub (Source: {source})")

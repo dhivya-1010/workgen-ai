@@ -1,4 +1,3 @@
-import ollama
 import sys
 from pathlib import Path
 

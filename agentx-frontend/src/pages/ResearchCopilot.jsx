@@ -2,7 +2,8 @@ import { useState } from "react";
 import ApiResponsePanel from "../components/ApiResponsePanel";
 import ResultCard from "../components/ResultCard";
 import { generateResearch } from "../services/api";
-import { downloadPdf } from "../utils/exportPdf";
+import { downloadPdf, shareViaEmail } from "../utils/exportPdf";
+import { usePageState } from "../context/PageStateContext";
 
 function parseJsonIfNeeded(value) {
   if (typeof value === "string") {
@@ -144,10 +145,13 @@ function renderList(items, theme) {
 }
 
 export default function ResearchCopilot({ theme }) {
-  const [topic, setTopic] = useState("");
+  const [pageState, setPageState] = usePageState("research-copilot");
+  const topic = pageState?.topic ?? "";
+  const result = pageState?.result ?? null;
+  const setTopic = (v) => setPageState((s) => ({ ...s, topic: v }));
+  const setResult = (v) => setPageState((s) => ({ ...s, result: v }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [result, setResult] = useState(null);
 
   const submit = async () => {
     if (!topic.trim()) {

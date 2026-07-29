@@ -1,9 +1,9 @@
 """
 Embedding Generator — creates vector embeddings for text chunks.
 
-Supports two backends:
-  1. Ollama  (e.g., nomic-embed-text, mxbai-embed-large)
-  2. OpenAI  (e.g., text-embedding-3-small, text-embedding-3-large)
+Supports backends:
+  1. Google Gemini (e.g., text-embedding-004)
+  2. OpenAI (e.g., text-embedding-3-small, text-embedding-3-large)
 """
 
 from __future__ import annotations
@@ -46,8 +46,8 @@ def generate_embeddings(
     backend = settings.embedding_backend.lower()
 
     try:
-        if backend == "ollama":
-            return _embed_with_ollama(texts, settings)
+        if backend == "gemini":
+            return _embed_with_gemini(texts, settings)
         elif backend == "openai":
             return _embed_with_openai(texts, settings)
         else:
@@ -64,7 +64,7 @@ def generate_embeddings(
 def _embed_with_fallback(texts: List[str], dim: int = 384) -> List[List[float]]:
     """
     Fallback deterministic feature vector generator using word feature hashing.
-    Ensures embedding generation never fails even if Ollama/OpenAI is offline.
+    Ensures embedding generation never fails even if external APIs are offline.
     """
     import hashlib
     import math
@@ -94,51 +94,38 @@ def _embed_with_fallback(texts: List[str], dim: int = 384) -> List[List[float]]:
     return embeddings
 
 
-
-def _embed_with_ollama(
+def _embed_with_gemini(
     texts: List[str],
     settings: OrganizationKnowledgeSettings,
 ) -> List[List[float]]:
-    """Generate embeddings using Ollama."""
+    """Generate embeddings using Gemini API."""
+    import os
+    from google import genai
+
+    api_key = os.getenv("GEMINI_API_KEY") or settings.gemini_api_key
+    if not api_key:
+        raise EmbeddingGenerationError("Gemini API key is not set.")
+
+    client = genai.Client(api_key=api_key)
+    model = getattr(settings, "gemini_embedding_model", "text-embedding-004")
+
     try:
-        import ollama
-    except ImportError:
-        raise EmbeddingGenerationError(
-            "ollama Python client is not installed. Run: pip install ollama"
-        )
-
-    client = ollama.Client(host=settings.ollama_base_url)
-    model = settings.ollama_embedding_model
-
-    try:
-        # Verify the model is available locally
-        client.show(model)
-    except Exception as exc:
-        raise EmbeddingGenerationError(
-            f"Ollama embedding model '{model}' is not available locally: {exc}"
-        )
-
-
-    embeddings = []
-    for idx, text in enumerate(texts):
-        try:
-            response = client.embeddings(model=model, prompt=text)
-            embeddings.append(response["embedding"])
-        except Exception as exc:
-            raise EmbeddingGenerationError(
-                f"Ollama embedding failed at index {idx}: {exc}"
+        embeddings = []
+        for text in texts:
+            response = client.models.embed_content(
+                model=model,
+                contents=text,
             )
-
-        if (idx + 1) % 10 == 0:
-            logger.debug("Embedded %d / %d chunks", idx + 1, len(texts))
-
-    logger.info(
-        "Generated %d embeddings via Ollama (model=%s, dim=%d)",
-        len(embeddings),
-        model,
-        len(embeddings[0]) if embeddings else 0,
-    )
-    return embeddings
+            embeddings.append(response.embedding.values)
+        logger.info(
+            "Generated %d embeddings via Gemini (model=%s, dim=%d)",
+            len(embeddings),
+            model,
+            len(embeddings[0]) if embeddings else 0,
+        )
+        return embeddings
+    except Exception as exc:
+        raise EmbeddingGenerationError(f"Gemini embedding failed: {exc}")
 
 
 def _embed_with_openai(

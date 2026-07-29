@@ -3,13 +3,18 @@ import ApiResponsePanel from '../components/ApiResponsePanel'
 import ResultCard from '../components/ResultCard'
 import { runMeetingPipeline } from '../services/api'
 import { downloadPdf, shareViaEmail } from '../utils/exportPdf'
+import { usePageState } from '../context/PageStateContext'
 
 export default function PipelineRunner({ theme }) {
-  const [transcript, setTranscript] = useState('')
-  const [useSample, setUseSample] = useState(true)
+  const [pageState, setPageState] = usePageState("pipeline-runner");
+  const transcript = pageState?.transcript ?? ''
+  const useSample = pageState?.useSample ?? true
+  const result = pageState?.result ?? null
+  const setTranscript = (v) => setPageState((s) => ({ ...s, transcript: v }))
+  const setUseSample = (v) => setPageState((s) => ({ ...s, useSample: v }))
+  const setResult = (v) => setPageState((s) => ({ ...s, result: v }))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [result, setResult] = useState(null)
 
   const submit = async (event) => {
     event.preventDefault()

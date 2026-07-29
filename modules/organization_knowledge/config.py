@@ -16,26 +16,22 @@ class OrganizationKnowledgeSettings:
     """Settings for the Organization Knowledge module."""
 
     # --- Embedding model ---
-    # Options: "ollama" (uses nomic-embed-text or similar) or "openai"
-    embedding_backend: str = os.getenv("ORG_KNOWLEDGE_EMBEDDING_BACKEND", "ollama")
-    # Ollama embedding model name (used when backend="ollama")
-    ollama_embedding_model: str = os.getenv("ORG_KNOWLEDGE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
+    # Options: "gemini", "openai", or "fallback"
+    embedding_backend: str = os.getenv("ORG_KNOWLEDGE_EMBEDDING_BACKEND", "gemini")
+    gemini_embedding_model: str = os.getenv("ORG_KNOWLEDGE_GEMINI_EMBEDDING_MODEL", "text-embedding-004")
     # OpenAI embedding model (used when backend="openai")
     openai_embedding_model: str = os.getenv("ORG_KNOWLEDGE_OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
     # --- LLM for QA ---
-    # Options: "ollama" or "openai"
-    llm_backend: str = os.getenv("ORG_KNOWLEDGE_LLM_BACKEND", "ollama")
-    # Ollama model for answering questions
-    ollama_llm_model: str = os.getenv("ORG_KNOWLEDGE_OLLAMA_LLM_MODEL", "gemma:2b")
+    gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
+    gemini_model: str = os.getenv("GEMINI_MODEL", "models/gemini-2.5-flash-lite")
+    # Options: "gemini" or "openai"
+    llm_backend: str = os.getenv("ORG_KNOWLEDGE_LLM_BACKEND", os.getenv("LLM_BACKEND", "gemini"))
     # OpenAI model for answering questions
     openai_llm_model: str = os.getenv("ORG_KNOWLEDGE_OPENAI_LLM_MODEL", "gpt-4o-mini")
 
     # --- OpenAI API Key (required if backend is "openai") ---
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
-
-    # --- Ollama base URL ---
-    ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
     # --- Chunking ---
     chunk_size: int = int(os.getenv("ORG_KNOWLEDGE_CHUNK_SIZE", "512"))

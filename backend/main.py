@@ -1,16 +1,32 @@
 from __future__ import print_function
 
-from win10toast import ToastNotifier
-from twilio.rest import Client
+import sys
+from pathlib import Path as _Path
+# Ensure bare imports (meeting_summarizer, knowledge_hub, etc.) resolve
+# whether main.py is run directly OR imported as `from backend import main`.
+sys.path.insert(0, str(_Path(__file__).resolve().parent))
+
+try:
+    from win10toast import ToastNotifier
+except Exception:
+    ToastNotifier = None  # type: ignore
+
+try:
+    from twilio.rest import Client
+except Exception:
+    Client = None  # type: ignore
 
 import os
 import base64
 import json
-import ollama
+from google import genai
 import time
 import re
 
-from notion_client import Client as NotionClient
+try:
+    from notion_client import Client as NotionClient
+except Exception:
+    NotionClient = None  # type: ignore
 from dotenv import load_dotenv
 
 from google.oauth2.credentials import Credentials
@@ -55,7 +71,15 @@ except:
 
 # ---------------- CONFIG ---------------- #
 
+from pathlib import Path
+
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
 load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or "placeholder_key"
+
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 NOTION_TOKEN = os.getenv("NOTION_MEETING_TOKEN")
 NOTION_DATABASE_ID = "31461e925a9480d29a9fefc14d9ac655"
@@ -64,11 +88,11 @@ TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_WHATSAPP_TO = os.getenv("TWILIO_WHATSAPP_TO")
 
-notion = NotionClient(auth=NOTION_TOKEN) if NOTION_TOKEN else None
+notion = NotionClient(auth=NOTION_TOKEN) if (NOTION_TOKEN and NotionClient) else None
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
-toaster = ToastNotifier()
+toaster = ToastNotifier() if ToastNotifier else None
 
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.modify',
@@ -80,8 +104,8 @@ SCOPES = [
 
 def send_whatsapp_message(text):
 
-    if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN or not TWILIO_WHATSAPP_TO:
-        print("⚠ Twilio credentials missing")
+    if not Client or not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN or not TWILIO_WHATSAPP_TO:
+        print("⚠ Twilio credentials missing or library not installed")
         return
 
     try:
@@ -140,14 +164,13 @@ Email:
 {email_text}
 """
 
-    response = ollama.chat(
-        model="gemma:2b",
-        messages=[{"role": "user", "content": prompt}],
-        options={"temperature": 0}
+    response = client.models.generate_content(
+        model=os.getenv("GEMINI_MODEL", "models/gemini-2.5-flash-lite"),
+        contents=prompt
     )
 
     try:
-        return json.loads(response["message"]["content"]).get("type", "none")
+        return json.loads(response.text).get("type", "none")
     except:
         return "none"
 
@@ -366,12 +389,13 @@ def check_reminders():
 
         if not event["reminded"] and reminder_time <= now < event_time:
 
-            toaster.show_toast(
-                "🔔 AgentX Reminder",
-                f"{event['title']} at {event_time.strftime('%H:%M')}",
-                duration=10,
-                threaded=True
-            )
+            if toaster:
+                toaster.show_toast(
+                    "🔔 AgentX Reminder",
+                    f"{event['title']} at {event_time.strftime('%H:%M')}",
+                    duration=10,
+                    threaded=True
+                )
 
             send_whatsapp_message(event['title'])
 

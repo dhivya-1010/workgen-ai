@@ -1,6 +1,17 @@
-import ollama
+from google import genai
+import os
 import json
 import re
+from pathlib import Path
+from dotenv import load_dotenv
+
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
+load_dotenv()
+
+client = genai.Client(
+    api_key=os.getenv("GEMINI_API_KEY") or "placeholder_key"
+)
 
 def summarize_meeting(transcript):
 
@@ -24,14 +35,17 @@ Meeting Transcript:
 {transcript}
 """
 
-    response = ollama.chat(
-        model="gemma:2b",
-        messages=[{"role": "user", "content": prompt}]
-    )
+    try:
+        response = client.models.generate_content(
+            model=os.getenv("GEMINI_MODEL", "models/gemini-2.5-flash-lite"),
+            contents=prompt
+        )
+        output = response.text or ""
+    except Exception as exc:
+        print(f"Meeting summarizer API error: {exc}")
+        output = ""
 
-    output = response["message"]["content"]
-
-    output = output.replace("```json","").replace("```","")
+    output = output.replace("```json", "").replace("```", "")
 
     match = re.search(r"\{[\s\S]*\}", output)
 
@@ -39,6 +53,7 @@ Meeting Transcript:
         return json.loads(match.group())
 
     return {
+        "title": "Meeting Summary",
         "summary": "Failed to summarize",
         "decisions": [],
         "actions": [],

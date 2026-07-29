@@ -2,7 +2,8 @@ import { useState } from "react";
 import ApiResponsePanel from "../components/ApiResponsePanel";
 import ResultCard from "../components/ResultCard";
 import { summarizeMeeting } from "../services/api";
-import { downloadPdf } from "../utils/exportPdf";
+import { downloadPdf, shareViaEmail } from "../utils/exportPdf";
+import { usePageState } from "../context/PageStateContext";
 
 function renderItems(items, theme) {
   const dark = theme === 'dark'
@@ -26,10 +27,13 @@ function renderItems(items, theme) {
 }
 
 export default function MeetingIntelligence({ theme }) {
-  const [transcript, setTranscript] = useState("");
+  const [pageState, setPageState] = usePageState("meeting-intelligence");
+  const transcript = pageState?.transcript ?? "";
+  const result = pageState?.result ?? null;
+  const setTranscript = (v) => setPageState((s) => ({ ...s, transcript: v }));
+  const setResult = (v) => setPageState((s) => ({ ...s, result: v }));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [result, setResult] = useState(null);
 
   const submit = async () => {
     if (!transcript.trim()) {

@@ -9,6 +9,7 @@ import {
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import EmailIntelligence from "./pages/EmailIntelligence";
+import InsightAgent from "./pages/InsightAgent";
 import KnowledgeHub from "./pages/KnowledgeHub";
 import JournalAI from "./pages/JournalAI";
 import MeetingIntelligence from "./pages/MeetingIntelligence";
@@ -85,6 +86,16 @@ const NAV_ITEMS = [
     description:
       "Browse and search entries saved into the shared knowledge base.",
     accent: "from-sky-500/30 via-cyan-500/15 to-indigo-500/10",
+  },
+  {
+    id: "insights",
+    path: "/insights",
+    label: "Insight Agent",
+    caption: "AI insights",
+    icon: "💡",
+    description:
+      "AI-generated insights from Email Intelligence, Meeting Intelligence, Organizational Knowledge, and Analytics. Filter by source and priority.",
+    accent: "from-indigo-500/30 via-violet-500/15 to-purple-500/10",
   },
   {
     id: "journal",
@@ -195,6 +206,7 @@ export default function App() {
               element={<Dashboard theme={theme} onNavigate={navigate} />}
             />
             <Route path="/email" element={pageElement(EmailIntelligence)} />
+            <Route path="/insights" element={pageElement(InsightAgent)} />
             <Route path="/meeting" element={pageElement(MeetingIntelligence)} />
             <Route
               path="/organization"

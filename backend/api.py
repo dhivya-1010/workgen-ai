@@ -91,6 +91,18 @@ class PipelineRequest(BaseModel):
     use_sample: bool = True
 
 
+class FollowUpCreateRequest(BaseModel):
+    title: str
+    source: str = "Task"
+    due_date: str = ""
+    priority: str = "medium"
+
+
+class FollowUpUpdateRequest(BaseModel):
+    priority: str | None = None    # "high" | "medium" | "low"
+    status: str | None = None      # "pending" | "completed"
+
+
 def _decode_email_body(payload):
     body = payload.get("body", {}).get("data")
     if body:
@@ -423,6 +435,21 @@ def pipeline_run(payload: PipelineRequest):
         "summary_data": summary,
         "notion": {"message": notion_status},
     }
+
+
+# ------------------------------------------------------------------
+# Insight Agent — AI-generated insights from Email Intelligence, Meeting Intelligence,
+# Organizational Knowledge, and Analytics
+# ------------------------------------------------------------------
+
+@app.get("/insights")
+def get_all_insights():
+    """Return all AI-generated insights."""
+    from backend.insight_agent import get_all_insights as _get_all, get_insight_stats
+
+    insights = _get_all()
+    stats = get_insight_stats()
+    return {"insights": insights, "stats": stats}
 
 
 if __name__ == "__main__":

@@ -87,6 +87,8 @@ const NAV_ITEMS = [
       "Browse and search entries saved into the shared knowledge base.",
     accent: "from-sky-500/30 via-cyan-500/15 to-indigo-500/10",
   },
+
+
   {
     id: "insights",
     path: "/insights",
@@ -139,11 +141,10 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen transition-colors ${
-        dark
+      className={`min-h-screen transition-colors ${dark
           ? "bg-slate-950 text-slate-50"
           : "light-theme bg-paper-grid text-[#23201C]"
-      }`}
+        }`}
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
@@ -188,11 +189,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setTheme(dark ? "light" : "dark")}
-                  className={`rounded-2xl border px-4 py-3 text-sm font-medium shadow-lg backdrop-blur-xl transition ${
-                    dark
+                  className={`rounded-2xl border px-4 py-3 text-sm font-medium shadow-lg backdrop-blur-xl transition ${dark
                       ? "border-white/10 bg-white/5 hover:bg-white/10"
                       : "border-[#D3CBB8] bg-[#FAF8F5]/85 hover:bg-[#F3EFE4] text-slate-800"
-                  }`}
+                    }`}
                 >
                   {dark ? "☀️ Light theme" : "🌙 Dark theme"}
                 </button>

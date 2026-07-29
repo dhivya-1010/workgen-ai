@@ -4,6 +4,7 @@ export function downloadPdf({ title, subtitle, sections, filename = 'export.pdf'
   const container = document.createElement('div');
   container.style.padding = '24px';
   container.style.fontFamily = 'Arial, sans-serif';
+  // PDF should always be light theme regardless of app mode
   container.style.color = '#0f172a';
   container.style.backgroundColor = '#ffffff';
 
@@ -71,18 +72,19 @@ export function downloadPdf({ title, subtitle, sections, filename = 'export.pdf'
   }
 }
 export function shareViaEmail({ subject, body, to = "" }) {
-  const mailtoUrl =
-    "mailto:" +
-    encodeURIComponent(to) +
-    "?subject=" +
-    encodeURIComponent(subject) +
-    "&body=" +
-    encodeURIComponent(body);
-  // Use an <a> click instead of window.open so browsers don't block it
-  const a = document.createElement("a");
-  a.href = mailtoUrl;
-  a.target = "_self";
+  let emailBody = body;
+  try {
+    const parsed = JSON.parse(body);
+    emailBody = JSON.stringify(parsed, null, 2);
+  } catch (e) {
+    // not JSON, keep as is
+  }
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+  const a = document.createElement('a');
+  a.href = gmailUrl;
+  a.target = '_blank';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+
 }

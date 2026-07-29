@@ -33,7 +33,8 @@ export default function EmailIntelligence({ theme }) {
   const [pageState, setPageState] = usePageState("email-intelligence");
   const payload = pageState?.payload ?? { emails: [], events: [], scannedCount: 0 };
   const setPayload = (v) => setPageState((s) => ({ ...s, payload: typeof v === 'function' ? v(s?.payload ?? { emails: [], events: [], scannedCount: 0 }) : v }));
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [rawResponse, setRawResponse] = useState(null);
   const [error, setError] = useState('')
   const [actionMessage, setActionMessage] = useState('')
   const [busyAction, setBusyAction] = useState('')

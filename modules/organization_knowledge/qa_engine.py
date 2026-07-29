@@ -7,7 +7,7 @@ Core principles:
   3. Never hallucinate or invent policies.
 
 Supports two backends:
-  - Ollama (e.g., gemma:2b, llama3, mistral)
+  - Google Gemini (e.g., models/gemini-2.5-flash-lite)
   - OpenAI (e.g., gpt-4o-mini, gpt-4o)
 """
 
@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import logging
 from typing import Optional
+from google import genai
 
 from modules.organization_knowledge.config import OrganizationKnowledgeSettings, get_settings
 
@@ -71,8 +72,8 @@ def answer_question(
             "answer": NOT_FOUND_RESPONSE,
             "source": "",
             "found": False,
-            "model": settings.ollama_llm_model
-            if settings.llm_backend == "ollama"
+            "model": settings.gemini_model
+            if settings.llm_backend == "gemini"
             else settings.openai_llm_model,
         }
 
@@ -86,10 +87,9 @@ def answer_question(
         f"If the document does not contain the answer, respond EXACTLY: '{NOT_FOUND_RESPONSE}'"
     )
 
-
     try:
-        if backend == "ollama":
-            result = _answer_with_ollama(user_prompt, settings)
+        if backend == "gemini":
+            result = _answer_with_gemini(user_prompt, settings)
         elif backend == "openai":
             result = _answer_with_openai(user_prompt, settings)
         else:
@@ -101,7 +101,6 @@ def answer_question(
             exc,
         )
         result = _answer_with_extractive_fallback(question, context)
-
 
     # Post-processing: detect if the answer indicates "not found"
     answer_text = result["answer"]
@@ -120,37 +119,6 @@ def answer_question(
         len(result["answer"]),
     )
     return result
-
-
-
-def _answer_with_ollama(
-    user_prompt: str,
-    settings: OrganizationKnowledgeSettings,
-) -> dict:
-    """Send the prompt to Ollama and return the response."""
-    try:
-        import ollama
-    except ImportError:
-        raise QAEngineError(
-            "ollama Python client is not installed. Run: pip install ollama"
-        )
-
-    client = ollama.Client(host=settings.ollama_base_url)
-    model = settings.ollama_llm_model
-
-    try:
-        response = client.chat(
-            model=model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
-            ],
-            options={"temperature": 0.0},  # Low temperature for factual answers
-        )
-        answer = response["message"]["content"].strip()
-        return {"answer": answer, "model": model}
-    except Exception as exc:
-        raise QAEngineError(f"Ollama chat failed: {exc}")
 
 
 def _answer_with_openai(
@@ -186,6 +154,36 @@ def _answer_with_openai(
         return {"answer": answer, "model": model}
     except Exception as exc:
         raise QAEngineError(f"OpenAI chat failed: {exc}")
+
+
+def _answer_with_gemini(
+    user_prompt: str,
+    settings: OrganizationKnowledgeSettings,
+) -> dict:
+    import os
+
+    api_key = os.getenv("GEMINI_API_KEY") or settings.gemini_api_key
+    if not api_key:
+        raise QAEngineError("Gemini API key is not set.")
+
+    client = genai.Client(api_key=api_key)
+    model = os.getenv("GEMINI_MODEL", settings.gemini_model)
+
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=f"{SYSTEM_PROMPT}\n\n{user_prompt}"
+        )
+
+        answer = response.text.strip()
+
+        return {
+            "answer": answer,
+            "model": model,
+        }
+
+    except Exception as exc:
+        raise QAEngineError(f"Gemini failed: {exc}")
 
 
 def _is_answer_found(answer_text: str, context: str) -> bool:

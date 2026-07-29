@@ -28,7 +28,7 @@ def test_decode_email_body_prefers_plain_text_and_falls_back_from_nested_parts()
 
 def test_parse_email_details_uses_subject_and_keyword_fallback_when_classifier_fails():
     fake_backend_main = SimpleNamespace(
-        classify_email_type=lambda _text: (_ for _ in ()).throw(RuntimeError("ollama unavailable")),
+        classify_email_type=lambda _text: (_ for _ in ()).throw(RuntimeError("llm unavailable")),
         IST=timezone.utc,
     )
 

@@ -17,6 +17,45 @@ from pydantic import BaseModel
 
 logger = logging.getLogger("api")
 
+# Absolute path to the backend directory — used for credential files
+_BACKEND_DIR = Path(__file__).resolve().parent
+
+
+def _get_gmail_service():
+    """Return an authenticated Gmail service using existing token only.
+
+    Never launches a browser / blocks. Returns None if credentials are
+    missing, expired without a refresh token, or refresh fails.
+    """
+    creds_file = _BACKEND_DIR / "credentials.json"
+    token_file = _BACKEND_DIR / "token.json"
+
+    if not creds_file.exists() or not token_file.exists():
+        return None, "Gmail credentials not configured (credentials.json / token.json missing)."
+
+    try:
+        from google.oauth2.credentials import Credentials
+        from google.auth.transport.requests import Request
+        from googleapiclient.discovery import build
+
+        SCOPES = [
+            "https://www.googleapis.com/auth/gmail.modify",
+            "https://www.googleapis.com/auth/calendar",
+        ]
+        creds = Credentials.from_authorized_user_file(str(token_file), SCOPES)
+
+        if not creds.valid:
+            if creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+                token_file.write_text(creds.to_json())
+            else:
+                return None, "Gmail token expired and cannot be refreshed without re-authorising."
+
+        service = build("gmail", "v1", credentials=creds)
+        return service, None
+    except Exception as exc:
+        return None, f"Gmail auth error: {exc}"
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -255,12 +294,9 @@ def action_agent():
     unread_emails = []
     email_error = None
 
-    try:
-        from backend import main as backend_main
-
-        if os.path.exists("credentials.json"):
-            creds = backend_main.get_credentials()
-            gmail = backend_main.build("gmail", "v1", credentials=creds)
+    gmail, email_error = _get_gmail_service()
+    if gmail:
+        try:
             results = gmail.users().messages().list(
                 userId="me", labelIds=["UNREAD"], maxResults=10
             ).execute()
@@ -279,8 +315,8 @@ def action_agent():
                     "sender": _email_header(headers, "From") or "Unknown",
                     "preview": text[:300],
                 })
-    except Exception as e:
-        email_error = str(e)
+        except Exception as e:
+            email_error = str(e)
 
     return {
         "tasks": [t for t in tasks if not t["done"]],
@@ -379,26 +415,24 @@ def scan_emails(payload: EmailRequest):
             raise HTTPException(status_code=500, detail=f"Failed to execute {payload.action} action: {e}")
         return {"status": "ok", "message": f"{payload.action} action completed."}
 
-    # Scan emails — gracefully handle missing credentials / config
-    try:
-        from backend import main as backend_main
-    except ModuleNotFoundError:
-        import sys
-        sys.path.insert(0, str(Path(__file__).resolve().parent))
-        import main as backend_main
+    # Scan emails — uses safe non-blocking credential loader
+    gmail, auth_error = _get_gmail_service()
 
-    # Check if credentials exist
-    if not os.path.exists("credentials.json"):
+    if not gmail:
         return {
             "scanned_count": 0,
             "detected_emails": [],
-            "upcoming_events": _load_json_list("events.json"),
-            "error": "Gmail API not configured. Place a 'credentials.json' file from Google Cloud Console in the project root.",
+            "upcoming_events": _load_json_list(str(_BACKEND_DIR / "events.json")),
+            "error": auth_error or "Gmail not configured.",
         }
 
     try:
-        creds = backend_main.get_credentials()
-        gmail = backend_main.build("gmail", "v1", credentials=creds)
+        from backend import main as backend_main
+    except Exception:
+        sys.path.insert(0, str(_BACKEND_DIR))
+        import main as backend_main  # type: ignore
+
+    try:
         results = gmail.users().messages().list(userId="me", labelIds=["UNREAD"], maxResults=5).execute()
         messages = results.get("messages", [])
         detected_emails = []
@@ -421,13 +455,13 @@ def scan_emails(payload: EmailRequest):
         return {
             "scanned_count": len(messages),
             "detected_emails": detected_emails,
-            "upcoming_events": _load_json_list("events.json"),
+            "upcoming_events": _load_json_list(str(_BACKEND_DIR / "events.json")),
         }
     except Exception as e:
         return {
             "scanned_count": 0,
             "detected_emails": [],
-            "upcoming_events": _load_json_list("events.json"),
+            "upcoming_events": _load_json_list(str(_BACKEND_DIR / "events.json")),
             "error": f"Gmail scan failed: {e}",
         }
 

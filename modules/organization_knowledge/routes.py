@@ -48,7 +48,7 @@ class AskResponse(BaseModel):
     success: bool
     answer: str
     found: bool
-    context_used: str = ""
+    context_used: Any = ""
     error: str = ""
 
 

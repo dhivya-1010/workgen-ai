@@ -239,4 +239,14 @@ export function runMeetingPipeline(transcript, useSample) {
   });
 }
 
+// ------------------------------------------------------------------
+// Insight Agent — AI-generated insights from across data sources
+// ------------------------------------------------------------------
+
+export function getInsights() {
+  return request("/insights", {
+    method: "GET",
+  });
+}
+
 export { API_BASE_URL };

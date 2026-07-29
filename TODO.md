@@ -1,11 +1,5 @@
-# Journal AI → Todo List + Statistics
 
-## Steps
-
-- [x] Step 0: Explore and understand codebase
-- [x] Step 1: Create plan and get approval
-- [x] Step 2: Rewrite `backend/journal_ai.py` with task CRUD + stats + persistence
-- [x] Step 3: Update `backend/api.py` with task REST endpoints
-- [x] Step 4: Add task API functions in `agentx-frontend/src/services/api.js`
-- [x] Step 5: Enhance `agentx-frontend/src/pages/JournalAI.jsx` with backend integration, progress bars, streak tracking
-- [x] Step 6: Test the implementation (all backend endpoints verified working)
+2. ✅ Create `agentx-frontend/src/pages/InsightAgent.jsx` - New Insight Agent page component
+3. ✅ Edit `agentx-frontend/src/services/api.js` - Replace follow-up API functions with insight API functions
+4. ✅ Edit `backend/api.py` - Replace follow-up endpoints with insight endpoints
+5. ✅ Edit `agentx-frontend/src/App.jsx` - Update route from /followups to /insights, update NAV_ITEMS

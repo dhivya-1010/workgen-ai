@@ -4,7 +4,7 @@ from datetime import datetime
 DB_FILE = "knowledge_base.json"
 
 
-def store_meeting(meeting_data):
+def store_meeting(meeting_data, source="Meeting Intelligence"):
 
     try:
         with open(DB_FILE, "r") as f:
@@ -14,6 +14,7 @@ def store_meeting(meeting_data):
 
     entry = {
         "type": "meeting",
+        "source": source,
         "date": str(datetime.now()),
         "data": meeting_data
     }
@@ -23,4 +24,4 @@ def store_meeting(meeting_data):
     with open(DB_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
-    print("✅ Meeting stored in Knowledge Hub")
+    print(f"✅ Meeting stored in Knowledge Hub (Source: {source})")

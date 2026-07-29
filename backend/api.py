@@ -91,6 +91,18 @@ class PipelineRequest(BaseModel):
     use_sample: bool = True
 
 
+class FollowUpCreateRequest(BaseModel):
+    title: str
+    source: str = "Task"
+    due_date: str = ""
+    priority: str = "medium"
+
+
+class FollowUpUpdateRequest(BaseModel):
+    priority: str | None = None    # "high" | "medium" | "low"
+    status: str | None = None      # "pending" | "completed"
+
+
 def _decode_email_body(payload):
     body = payload.get("body", {}).get("data")
     if body:
@@ -301,11 +313,37 @@ def knowledge_hub(payload: KnowledgeRequest):
     if query:
         entries = [entry for entry in entries if query in json.dumps(entry).lower()]
     normalized = []
-    for entry in reversed(entries[-10:]):
+    for entry in reversed(entries[-20:]):
         data = entry.get("data", {}) if isinstance(entry, dict) else {}
+
+        # Determine source
+        raw_source = entry.get("source") or entry.get("type", "Knowledge Hub")
+        if raw_source.lower() in ["meeting", "meeting intelligence"]:
+            source = "Meeting Intelligence"
+        elif raw_source.lower() in ["pipeline", "meeting pipeline"]:
+            source = "Meeting Pipeline"
+        elif raw_source.lower() in ["research", "research copilot"]:
+            source = "Research Copilot"
+        elif raw_source.lower() in ["journal", "journal ai"]:
+            source = "Journal AI"
+        elif raw_source.lower() in ["live transcript", "live transcription"]:
+            source = "Live Transcript"
+        else:
+            source = str(raw_source).title()
+
+        # Determine actual title
+        raw_title = data.get("title") or entry.get("title") or ""
+        if not raw_title or raw_title.strip().lower() == "short meeting title":
+            summary_snippet = (data.get("summary") or "").strip()
+            if summary_snippet and summary_snippet.strip().lower() != "short summary":
+                raw_title = summary_snippet.split(".")[0][:60]
+            else:
+                raw_title = f"{source} Entry"
+
         normalized.append({
             "type": entry.get("type", "entry"),
-            "title": data.get("title") or entry.get("type", "Knowledge item").title(),
+            "source": source,
+            "title": raw_title,
             "summary": data.get("summary") or json.dumps(data or entry, ensure_ascii=False),
         })
     return {"entries": normalized}
@@ -423,6 +461,21 @@ def pipeline_run(payload: PipelineRequest):
         "summary_data": summary,
         "notion": {"message": notion_status},
     }
+
+
+# ------------------------------------------------------------------
+# Insight Agent — AI-generated insights from Email Intelligence, Meeting Intelligence,
+# Organizational Knowledge, and Analytics
+# ------------------------------------------------------------------
+
+@app.get("/insights")
+def get_all_insights():
+    """Return all AI-generated insights."""
+    from backend.insight_agent import get_all_insights as _get_all, get_insight_stats
+
+    insights = _get_all()
+    stats = get_insight_stats()
+    return {"insights": insights, "stats": stats}
 
 
 if __name__ == "__main__":

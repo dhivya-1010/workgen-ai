@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import ApiResponsePanel from '../components/ApiResponsePanel'
 import ResultCard from '../components/ResultCard'
 import { runEmailAction, scanEmails } from '../services/api'
+import { shareViaEmail } from '../utils/exportPdf'
 
 function normalizeEmailScan(data) {
   return {
@@ -76,6 +77,22 @@ export default function EmailIntelligence({ theme }) {
     }
   }
 
+  const handleShareSingleEmail = (email) => {
+    const subject = `[Email Signal] ${email.subject || email.sender || 'Email Insight'}`
+    const body = `Hi,\n\nHere is an email insight captured by AgentX Email Intelligence:\n\nSubject: ${email.subject || 'N/A'}\nFrom: ${email.sender || email.from || 'N/A'}\nType: ${email.detected_type || email.type || 'N/A'}\nSummary/Preview: ${email.preview || email.snippet || email.body || 'N/A'}\n\n---\nSent via AgentX Email Intelligence`
+    shareViaEmail({ subject, body })
+  }
+
+  const handleShareAllEmails = () => {
+    if (!payload.emails.length) return
+    const subject = `AgentX Email Intelligence Scan Report (${payload.emails.length} signals)`
+    const emailSummaries = payload.emails
+      .map((e, i) => `${i + 1}. [${e.detected_type || e.type || 'Signal'}] ${e.subject || 'Untitled'} - ${e.sender || e.from || 'Unknown'}\n   ${e.preview || e.snippet || ''}`)
+      .join('\n\n')
+    const body = `Hi,\n\nHere is the Email Intelligence Scan Summary:\n\nTotal Signals: ${payload.emails.length}\nMeetings Detected: ${summary.meetings}\nTasks Detected: ${summary.tasks}\n\n=== EMAIL SIGNALS ===\n${emailSummaries}\n\n---\nSent via AgentX Email Intelligence`
+    shareViaEmail({ subject, body })
+  }
+
   const cardClass = theme === 'dark' ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
 
   return (
@@ -98,22 +115,37 @@ export default function EmailIntelligence({ theme }) {
         subtitle="Scan Gmail, classify intent, and surface calendar-ready opportunities."
         theme={theme}
         actions={
-          <button
-            type="button"
-            onClick={scan}
-            disabled={loading}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-              theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
-            }`}
-          >
-            {loading ? 'Scanning…' : 'Scan Emails'}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            {payload.emails.length > 0 ? (
+              <button
+                type="button"
+                onClick={handleShareAllEmails}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
+                  theme === 'dark'
+                    ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
+                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                }`}
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Share Scan via Email
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={scan}
+              disabled={loading}
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
+              }`}
+            >
+              {loading ? 'Scanning…' : 'Scan Emails'}
+            </button>
+          </div>
         }
       >
         <div className="space-y-4">
-          {/* <p className="max-w-3xl text-sm leading-7 text-slate-400">
-            The frontend calls <code className="rounded bg-black/10 px-1.5 py-0.5">POST /scan-emails</code> and renders email classifications, downstream actions, and upcoming event context.
-          </p> */}
           {error ? <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</div> : null}
           {actionMessage ? <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">{actionMessage}</div> : null}
         </div>
@@ -169,6 +201,20 @@ export default function EmailIntelligence({ theme }) {
                         }`}
                       >
                         {busyAction === `notion-${index}` ? 'Saving…' : 'Save to Notion'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleShareSingleEmail(email)}
+                        className={`flex items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-medium transition ${
+                          theme === 'dark'
+                            ? 'border-purple-400/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/15'
+                            : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
+                        }`}
+                      >
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Share via Email
                       </button>
                     </div>
                   </div>

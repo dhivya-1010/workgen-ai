@@ -7,11 +7,14 @@ def summarize_meeting(transcript):
     prompt = f"""
 You are a meeting assistant.
 
-Return ONLY valid JSON:
+Generate a JSON object summarizing the meeting transcript below.
+The "title" MUST be a concise, descriptive title summarizing the main topic or objective of the meeting (do NOT output "short meeting title" literally).
+
+Return ONLY valid JSON with this exact schema:
 
 {{
-  "title": "short meeting title",
-  "summary": "short summary",
+  "title": "<Concise descriptive title of the meeting>",
+  "summary": "<Short executive summary>",
   "decisions": [],
   "actions": [],
   "next_steps": []

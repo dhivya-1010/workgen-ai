@@ -71,6 +71,18 @@ export function downloadPdf({ title, subtitle, sections, filename = 'export.pdf'
   }
 }
 export function shareViaEmail({ subject, body, to = "" }) {
-  const mailtoUrl = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.open(mailtoUrl, '_self');
+  const mailtoUrl =
+    "mailto:" +
+    encodeURIComponent(to) +
+    "?subject=" +
+    encodeURIComponent(subject) +
+    "&body=" +
+    encodeURIComponent(body);
+  // Use an <a> click instead of window.open so browsers don't block it
+  const a = document.createElement("a");
+  a.href = mailtoUrl;
+  a.target = "_self";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

@@ -3,6 +3,7 @@ import ApiResponsePanel from '../components/ApiResponsePanel'
 import ResultCard from '../components/ResultCard'
 import { runEmailAction, scanEmails } from '../services/api'
 import { shareViaEmail } from '../utils/exportPdf'
+import { usePageState } from '../context/PageStateContext'
 
 function normalizeEmailScan(data) {
   return {
@@ -29,12 +30,13 @@ function typeTone(type, theme) {
 }
 
 export default function EmailIntelligence({ theme }) {
+  const [pageState, setPageState] = usePageState("email-intelligence");
+  const payload = pageState?.payload ?? { emails: [], events: [], scannedCount: 0 };
+  const setPayload = (v) => setPageState((s) => ({ ...s, payload: typeof v === 'function' ? v(s?.payload ?? { emails: [], events: [], scannedCount: 0 }) : v }));
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [actionMessage, setActionMessage] = useState('')
   const [busyAction, setBusyAction] = useState('')
-  const [rawResponse, setRawResponse] = useState(null)
-  const [payload, setPayload] = useState({ emails: [], events: [], scannedCount: 0 })
 
   const summary = useMemo(() => ({
     meetings: payload.emails.filter((item) => String(item.detected_type || item.type).toLowerCase().includes('meeting')).length,

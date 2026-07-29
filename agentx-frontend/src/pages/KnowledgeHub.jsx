@@ -85,9 +85,20 @@ export default function KnowledgeHub({ theme }) {
           entries.map((entry, index) => (
             <ResultCard
               key={`${entry.title || entry.type || "entry"}-${index}`}
-              title={entry.title || entry.type || "Knowledge Entry"}
-              subtitle={entry.type || "entry"}
+              title={entry.title || "Knowledge Entry"}
+              subtitle={`Source: ${entry.source || entry.type || "Knowledge Hub"}`}
               theme={theme}
+              actions={
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    dark
+                      ? "bg-cyan-500/10 text-cyan-300 border border-cyan-500/30"
+                      : "bg-clay/10 text-clay border border-clay/30"
+                  }`}
+                >
+                  {entry.source || entry.type || "Knowledge Hub"}
+                </span>
+              }
             >
               <p
                 className={`text-sm leading-7 ${dark ? "text-slate-300" : "text-stone-700"}`}

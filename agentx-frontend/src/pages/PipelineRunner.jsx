@@ -2,7 +2,7 @@ import { useState } from 'react'
 import ApiResponsePanel from '../components/ApiResponsePanel'
 import ResultCard from '../components/ResultCard'
 import { runMeetingPipeline } from '../services/api'
-import { downloadPdf } from '../utils/exportPdf'
+import { downloadPdf, shareViaEmail } from '../utils/exportPdf'
 
 export default function PipelineRunner({ theme }) {
   const [transcript, setTranscript] = useState('')
@@ -43,6 +43,15 @@ export default function PipelineRunner({ theme }) {
           content: result.notion?.message || 'No Notion status returned.',
         },
       ],
+    })
+  }
+
+  const handleShareEmail = () => {
+    if (!result?.summary_data) return
+    const body = `Hi,\n\nHere are the results from the Meeting Pipeline:\n\n=== PIPELINE SUMMARY ===\n${result.summary_data.summary || 'N/A'}\n\n=== NOTION SYNC ===\n${result.notion?.message || 'N/A'}\n\n---\nSent via AgentX Meeting Pipeline`
+    shareViaEmail({
+      subject: 'Meeting Pipeline Results & Summary',
+      body,
     })
   }
 
@@ -97,20 +106,36 @@ export default function PipelineRunner({ theme }) {
           subtitle="Returned by /pipeline/run"
           theme={theme}
           actions={
-            <button
-              type="button"
-              onClick={handleDownloadPdf}
-              className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                theme === 'dark'
-                  ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'
-                  : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-              }`}
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Download PDF
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={handleShareEmail}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
+                  theme === 'dark'
+                    ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
+                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                }`}
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Share via Email
+              </button>
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
+                  theme === 'dark'
+                    ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'
+                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                }`}
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF
+              </button>
+            </div>
           }
         >
 

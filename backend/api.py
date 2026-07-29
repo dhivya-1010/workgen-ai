@@ -313,11 +313,37 @@ def knowledge_hub(payload: KnowledgeRequest):
     if query:
         entries = [entry for entry in entries if query in json.dumps(entry).lower()]
     normalized = []
-    for entry in reversed(entries[-10:]):
+    for entry in reversed(entries[-20:]):
         data = entry.get("data", {}) if isinstance(entry, dict) else {}
+
+        # Determine source
+        raw_source = entry.get("source") or entry.get("type", "Knowledge Hub")
+        if raw_source.lower() in ["meeting", "meeting intelligence"]:
+            source = "Meeting Intelligence"
+        elif raw_source.lower() in ["pipeline", "meeting pipeline"]:
+            source = "Meeting Pipeline"
+        elif raw_source.lower() in ["research", "research copilot"]:
+            source = "Research Copilot"
+        elif raw_source.lower() in ["journal", "journal ai"]:
+            source = "Journal AI"
+        elif raw_source.lower() in ["live transcript", "live transcription"]:
+            source = "Live Transcript"
+        else:
+            source = str(raw_source).title()
+
+        # Determine actual title
+        raw_title = data.get("title") or entry.get("title") or ""
+        if not raw_title or raw_title.strip().lower() == "short meeting title":
+            summary_snippet = (data.get("summary") or "").strip()
+            if summary_snippet and summary_snippet.strip().lower() != "short summary":
+                raw_title = summary_snippet.split(".")[0][:60]
+            else:
+                raw_title = f"{source} Entry"
+
         normalized.append({
             "type": entry.get("type", "entry"),
-            "title": data.get("title") or entry.get("type", "Knowledge item").title(),
+            "source": source,
+            "title": raw_title,
             "summary": data.get("summary") or json.dumps(data or entry, ensure_ascii=False),
         })
     return {"entries": normalized}

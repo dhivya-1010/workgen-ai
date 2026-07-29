@@ -70,4 +70,7 @@ export function downloadPdf({ title, subtitle, sections, filename = 'export.pdf'
     }
   }
 }
-
+export function shareViaEmail({ subject, body, to = "" }) {
+  const mailtoUrl = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoUrl, '_self');
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import ApiResponsePanel from "../components/ApiResponsePanel";
 import ResultCard from "../components/ResultCard";
 import { summarizeMeeting } from "../services/api";
+import { downloadPdf } from "../utils/exportPdf";
 
 function renderItems(items, theme) {
   const dark = theme === 'dark'
@@ -49,6 +50,33 @@ export default function MeetingIntelligence({ theme }) {
     }
   };
 
+  const handleDownloadPdf = () => {
+    if (!result) return;
+    downloadPdf({
+      title: "Meeting Intelligence Summary",
+      subtitle: "AI-generated Meeting Insights & Action Items",
+      filename: "meeting_intelligence_summary.pdf",
+      sections: [
+        {
+          title: "Executive Summary",
+          content: result.summary || "No summary generated.",
+        },
+        {
+          title: "Decisions",
+          content: result.decisions || [],
+        },
+        {
+          title: "Action Items",
+          content: result.actions || result.action_items || [],
+        },
+        {
+          title: "Next Steps",
+          content: result.next_steps || [],
+        },
+      ],
+    });
+  };
+
   return (
     <div className="space-y-6">
       <ResultCard
@@ -56,16 +84,34 @@ export default function MeetingIntelligence({ theme }) {
         subtitle="Summarize transcripts and surface decisions, action items, and next steps."
         theme={theme}
         actions={
-          <button
-            type="button"
-            onClick={submit}
-            disabled={loading}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-              theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
-            }`}
-          >
-            {loading ? "Generating…" : "Generate Summary"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            {result ? (
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
+                  theme === 'dark'
+                    ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'
+                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                }`}
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={submit}
+              disabled={loading}
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
+              }`}
+            >
+              {loading ? "Generating…" : "Generate Summary"}
+            </button>
+          </div>
         }
       >
         <textarea

@@ -228,13 +228,12 @@ export default function Dashboard({ onNavigate, theme }) {
   }, [onNavigate]);
 
   return (
-    <div className="vaz-stage flex min-h-[calc(100vh-2rem)] items-center justify-center px-2 py-6 sm:px-4">
+    <div className="vaz-stage flex-1 flex flex-col items-center justify-center px-2 py-6 sm:px-4">
       <section
-        className={`vaz-shell w-full max-w-4xl overflow-hidden rounded-[40px] border px-6 py-10 shadow-[0_0_80px_rgba(56,189,248,0.16)] backdrop-blur-2xl sm:px-10 sm:py-14 ${
-          dark
-            ? "border-cyan-400/15 bg-slate-950/70"
-            : "border-[#C7D7E0] bg-[#F8FBFF]/80"
-        }`}
+        className={`vaz-shell w-full max-w-4xl overflow-hidden rounded-[40px] border px-6 py-10 shadow-[0_0_80px_rgba(56,189,248,0.16)] backdrop-blur-2xl sm:px-10 sm:py-14 ${dark
+          ? "border-cyan-400/15 bg-slate-950/70"
+          : "border-[#C7D7E0] bg-[#F8FBFF]/80"
+          }`}
       >
         <div className="flex flex-col items-center text-center">
           <div className="vaz-orb-wrap relative flex items-center justify-center">
@@ -262,15 +261,14 @@ export default function Dashboard({ onNavigate, theme }) {
           </p>
 
           <div
-            className={`mt-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] ${
-              isListeningUi
-                ? dark
-                  ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-300"
-                  : "border-sky-500/30 bg-sky-500/10 text-sky-700"
-                : dark
-                  ? "border-white/10 bg-white/5 text-slate-500"
-                  : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-500"
-            }`}
+            className={`mt-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] ${isListeningUi
+              ? dark
+                ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-300"
+                : "border-sky-500/30 bg-sky-500/10 text-sky-700"
+              : dark
+                ? "border-white/10 bg-white/5 text-slate-500"
+                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-500"
+              }`}
           >
             <span
               className={`h-2.5 w-2.5 rounded-full ${isListeningUi ? "bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.8)]" : "bg-current opacity-50"}`}

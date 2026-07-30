@@ -3,9 +3,8 @@ export default function ResultCard({ title, subtitle, theme, children, actions }
 
   return (
     <section
-      className={`rounded-[28px] border p-5 shadow-xl backdrop-blur-xl md:p-6 ${
-        dark ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
-      }`}
+      className={`rounded-[28px] border p-5 shadow-xl backdrop-blur-xl md:p-6 ${dark ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
+        }`}
     >
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>

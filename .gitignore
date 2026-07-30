@@ -10,8 +10,6 @@ env/
 .venv/
 
 # Environment files
-.env
-.env.*
 !.env.example
 
 # Local secrets / auth
@@ -33,7 +31,6 @@ agentx-frontend/node_modules/
 agentx-frontend/dist/
 
 # Editor / logs
-.vscode/
 tempCodeRunnerFile.py
 *.log
 
@@ -43,3 +40,4 @@ Thumbs.db
 
 .enc.local
 .enc.example
+config.bat

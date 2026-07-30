@@ -69,11 +69,9 @@ button {
   position: absolute;
   inset: 8% 18%;
   border-radius: 999px;
-  background: radial-gradient(
-    circle,
-    rgba(56, 189, 248, 0.16),
-    transparent 72%
-  );
+  background: radial-gradient(circle,
+      rgba(56, 189, 248, 0.16),
+      transparent 72%);
   filter: blur(30px);
   pointer-events: none;
 }
@@ -87,12 +85,10 @@ button {
   position: absolute;
   inset: 1rem;
   border-radius: 32px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08),
-    transparent 35%,
-    rgba(255, 255, 255, 0.03)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.08),
+      transparent 35%,
+      rgba(255, 255, 255, 0.03));
   pointer-events: none;
 }
 
@@ -113,12 +109,10 @@ button {
 }
 
 .vaz-orb-halo {
-  background: radial-gradient(
-    circle,
-    rgba(96, 212, 255, 0.42) 0%,
-    rgba(59, 130, 246, 0.2) 28%,
-    transparent 72%
-  );
+  background: radial-gradient(circle,
+      rgba(96, 212, 255, 0.42) 0%,
+      rgba(59, 130, 246, 0.2) 28%,
+      transparent 72%);
   filter: blur(12px);
   animation: vaz-pulse 4.8s ease-in-out infinite;
 }
@@ -126,20 +120,16 @@ button {
 .vaz-orb-core {
   inset: 12%;
   background:
-    radial-gradient(
-      circle at 35% 30%,
+    radial-gradient(circle at 35% 30%,
       rgba(255, 255, 255, 0.95) 0%,
       rgba(170, 241, 255, 0.78) 11%,
       rgba(56, 189, 248, 0.34) 35%,
       rgba(6, 182, 212, 0.18) 58%,
-      rgba(15, 23, 42, 0.9) 100%
-    ),
-    linear-gradient(
-      160deg,
+      rgba(15, 23, 42, 0.9) 100%),
+    linear-gradient(160deg,
       rgba(34, 211, 238, 0.85),
       rgba(59, 130, 246, 0.7),
-      rgba(99, 102, 241, 0.8)
-    );
+      rgba(99, 102, 241, 0.8));
   box-shadow:
     0 0 30px rgba(56, 189, 248, 0.5),
     0 0 90px rgba(59, 130, 246, 0.3),
@@ -170,32 +160,34 @@ button {
 
 .vaz-orb-sheen {
   inset: 16%;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.5),
-    rgba(255, 255, 255, 0.02) 32%,
-    transparent 60%
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.02) 32%,
+      transparent 60%);
   mix-blend-mode: screen;
   opacity: 0.55;
 }
 
 @keyframes vaz-float {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-14px) scale(1.015);
   }
 }
 
 @keyframes vaz-pulse {
+
   0%,
   100% {
     transform: scale(0.98);
     opacity: 0.8;
   }
+
   50% {
     transform: scale(1.05);
     opacity: 1;
@@ -206,6 +198,7 @@ button {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -223,4 +216,30 @@ button {
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+html.dark,
+body.dark {
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+html.light-theme,
+body.light-theme {
+  background-color: #f3efe4;
+  background-image:
+    linear-gradient(to right, rgba(47, 93, 80, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(47, 93, 80, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+  color: #23201c;
 }

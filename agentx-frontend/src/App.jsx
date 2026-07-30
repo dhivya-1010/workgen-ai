@@ -120,6 +120,23 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem("agentx-theme", theme);
+    const root = document.documentElement;
+    const body = document.body;
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+
+    if (theme === "dark") {
+      root.classList.add("dark");
+      root.classList.remove("light-theme");
+      body.classList.add("dark");
+      body.classList.remove("light-theme");
+      if (metaTheme) metaTheme.setAttribute("content", "#020617");
+    } else {
+      root.classList.remove("dark");
+      root.classList.add("light-theme");
+      body.classList.remove("dark");
+      body.classList.add("light-theme");
+      if (metaTheme) metaTheme.setAttribute("content", "#f3efe4");
+    }
   }, [theme]);
 
   const activePath = location.pathname || "/";
@@ -141,12 +158,12 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen transition-colors ${dark
-          ? "bg-slate-950 text-slate-50"
-          : "light-theme bg-paper-grid text-[#23201C]"
+      className={`relative min-h-screen w-full transition-colors ${dark
+        ? "bg-slate-950 text-slate-50"
+        : "light-theme bg-paper-grid text-[#23201C]"
         }`}
     >
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
           className={`absolute -left-16 top-10 h-64 w-64 rounded-full blur-3xl ${dark ? "bg-cyan-500/12" : "bg-clay/5"}`}
         />
@@ -166,7 +183,7 @@ export default function App() {
           theme={theme}
         />
 
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <main className="flex-1 flex flex-col p-4 md:p-6 lg:p-8">
           {!isDashboard ? (
             <header className="mb-6 flex flex-col gap-4 lg:mb-8 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -190,8 +207,8 @@ export default function App() {
                   type="button"
                   onClick={() => setTheme(dark ? "light" : "dark")}
                   className={`rounded-2xl border px-4 py-3 text-sm font-medium shadow-lg backdrop-blur-xl transition ${dark
-                      ? "border-white/10 bg-white/5 hover:bg-white/10"
-                      : "border-[#D3CBB8] bg-[#FAF8F5]/85 hover:bg-[#F3EFE4] text-slate-800"
+                    ? "border-white/10 bg-white/5 hover:bg-white/10"
+                    : "border-[#D3CBB8] bg-[#FAF8F5]/85 hover:bg-[#F3EFE4] text-slate-800"
                     }`}
                 >
                   {dark ? "☀️ Light theme" : "🌙 Dark theme"}

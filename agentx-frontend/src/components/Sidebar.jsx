@@ -7,29 +7,29 @@ export default function Sidebar({ items, activePath, onNavigate, theme }) {
   return (
     <aside
       className={`${sidebarBase} ${dark
-          ? "border-white/10 bg-slate-950/70"
-          : "border-[#D3CBB8] bg-[#FAF8F5]/85"
+        ? "border-white/10 bg-slate-950/70"
+        : "border-[#D3CBB8] bg-[#FAF8F5]/85"
         }`}
     >
       <div className="flex h-full flex-col px-4 py-5 md:px-5 md:py-8">
         <div className="mb-6 flex items-center gap-3 md:mb-10">
           <div
             className={`flex h-12 w-12 items-center justify-center rounded-2xl text-xl font-bold text-white shadow-lg ${dark
-                ? "bg-gradient-to-br from-cyan-400 via-sky-500 to-violet-500 shadow-sky-500/20"
-                : "bg-clay shadow-clay/20"
+              ? "bg-gradient-to-br from-amber-400 via-yellow-500 to-yellow-500 shadow-yellow-500/20"
+              : "bg-clay shadow-clay/20"
               }`}
           >
             AX
           </div>
           <div>
             <p
-              className={`text-xs font-semibold uppercase tracking-[0.28em] ${dark ? "text-cyan-400" : "text-forest"}`}
+              className={`text-xs font-semibold uppercase tracking-[0.28em] ${dark ? "text-amber-400" : "text-forest"}`}
             >
               The ultimate AI assistant
             </p>
             <h1 className="text-2xl font-semibold">
               Agent
-              <span className={dark ? "text-cyan-400" : "text-clay"}>X</span>
+              <span className={dark ? "text-amber-400" : "text-clay"}>X</span>
             </h1>
           </div>
         </div>
@@ -50,12 +50,12 @@ export default function Sidebar({ items, activePath, onNavigate, theme }) {
                 type="button"
                 onClick={() => onNavigate(item.path)}
                 className={`group min-w-fit rounded-2xl border px-4 py-3 text-left transition-all md:min-w-0 ${active
-                    ? dark
-                      ? "border-cyan-400/60 bg-gradient-to-r from-cyan-500/20 to-violet-500/20 shadow-lg shadow-cyan-500/10"
-                      : "border-clay bg-clay/10 shadow-lg shadow-clay/5"
-                    : dark
-                      ? "border-white/10 bg-white/5 hover:border-cyan-400/30 hover:bg-white/10"
-                      : "border-[#D3CBB8] bg-[#FAF8F5]/80 hover:border-clay/50 hover:bg-clay/5"
+                  ? dark
+                    ? "border-amber-400/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 shadow-lg shadow-amber-500/10"
+                    : "border-clay bg-clay/10 shadow-lg shadow-clay/5"
+                  : dark
+                    ? "border-white/10 bg-white/5 hover:border-amber-400/30 hover:bg-white/10"
+                    : "border-[#D3CBB8] bg-[#FAF8F5]/80 hover:border-clay/50 hover:bg-clay/5"
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -81,8 +81,8 @@ export default function Sidebar({ items, activePath, onNavigate, theme }) {
 
         <div
           className={`mt-6 rounded-3xl border p-4 ${dark
-              ? "border-white/10 bg-white/5"
-              : "border-[#D3CBB8] bg-[#FAF8F5]/90"
+            ? "border-white/10 bg-white/5"
+            : "border-[#D3CBB8] bg-[#FAF8F5]/90"
             }`}
         >
           {/* <p className="text-sm font-semibold">Introducing AgentX by</p> */}

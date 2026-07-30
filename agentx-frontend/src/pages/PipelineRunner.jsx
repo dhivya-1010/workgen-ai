@@ -82,11 +82,10 @@ export default function PipelineRunner({ theme }) {
             onChange={(event) => setTranscript(event.target.value)}
             rows={10}
             placeholder="Paste a meeting transcript here to run the full pipeline..."
-            className={`w-full rounded-3xl border px-4 py-4 text-sm outline-none transition ${
-              theme === 'dark'
-                ? 'border-white/10 bg-slate-950/60 text-slate-100 placeholder:text-slate-500'
-                : 'border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay'
-            }`}
+            className={`w-full rounded-3xl border px-4 py-4 text-sm outline-none transition ${theme === 'dark'
+              ? 'border-white/10 bg-slate-950/60 text-slate-100 placeholder:text-slate-500'
+              : 'border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay'
+              }`}
           />
 
           {error ? (
@@ -96,9 +95,8 @@ export default function PipelineRunner({ theme }) {
           <button
             type="submit"
             disabled={loading}
-            className={`rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-              theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
-            }`}
+            className={`rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+              }`}
           >
             {loading ? 'Running pipeline…' : 'Run Pipeline'}
           </button>
@@ -115,11 +113,10 @@ export default function PipelineRunner({ theme }) {
               <button
                 type="button"
                 onClick={handleShareEmail}
-                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                  theme === 'dark'
-                    ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
-                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-                }`}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
+                  ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
+                  : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                  }`}
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -129,11 +126,10 @@ export default function PipelineRunner({ theme }) {
               <button
                 type="button"
                 onClick={handleDownloadPdf}
-                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                  theme === 'dark'
-                    ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'
-                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-                }`}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
+                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'
+                  : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                  }`}
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -146,11 +142,11 @@ export default function PipelineRunner({ theme }) {
 
           <div className="space-y-4 text-sm text-slate-300">
             <div>
-              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-cyan-400' : 'text-forest font-semibold'}`}>Summary</div>
+              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-amber-400' : 'text-forest font-semibold'}`}>Summary</div>
               <p className={`mt-2 leading-7 ${theme === 'dark' ? 'text-slate-300' : 'text-stone-700'}`}>{result.summary_data.summary || 'No summary returned.'}</p>
             </div>
             <div>
-              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-cyan-400' : 'text-forest font-semibold'}`}>Notion</div>
+              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-amber-400' : 'text-forest font-semibold'}`}>Notion</div>
               <p className={`mt-2 leading-7 ${theme === 'dark' ? 'text-slate-300' : 'text-stone-700'}`}>{result.notion?.message || 'No Notion status returned.'}</p>
             </div>
           </div>

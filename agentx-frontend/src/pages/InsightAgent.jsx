@@ -12,15 +12,15 @@ const SOURCE_CONFIG = {
     icon: "✉️",
     label: "Email Intelligence",
     color: {
-      dark: "bg-sky-500/15 text-sky-300 border-sky-400/30",
-      light: "bg-sky-100 text-sky-700 border-sky-300",
+      dark: "bg-yellow-500/15 text-yellow-300 border-yellow-400/30",
+      light: "bg-sky-100 text-sky-700 border-yellow-300",
     },
   },
   Meeting: {
     icon: "🧠",
     label: "Meeting Intelligence",
     color: {
-      dark: "bg-violet-500/15 text-violet-300 border-violet-400/30",
+      dark: "bg-yellow-500/15 text-violet-300 border-violet-400/30",
       light: "bg-violet-100 text-violet-700 border-violet-300",
     },
   },
@@ -107,11 +107,10 @@ function formatDetectedAt(isoString) {
 function StatCard({ icon, label, value, dark }) {
   return (
     <div
-      className={`rounded-[28px] border p-5 shadow-xl transition ${
-        dark
-          ? "border-white/10 bg-white/5"
-          : "border-[#D3CBB8] bg-[#FAF8F5]"
-      }`}
+      className={`rounded-[28px] border p-5 shadow-xl transition ${dark
+        ? "border-white/10 bg-white/5"
+        : "border-[#D3CBB8] bg-[#FAF8F5]"
+        }`}
     >
       <div className="flex items-center justify-between">
         <p className={`text-sm ${dark ? "text-slate-400" : "text-stone-500"}`}>
@@ -214,7 +213,7 @@ export default function InsightAgent({ theme }) {
 
   // ------ Styling helpers ------
   const inputClass = dark
-    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-cyan-400/40"
+    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
     : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay";
 
   const badgeClass = dark
@@ -222,7 +221,7 @@ export default function InsightAgent({ theme }) {
     : "border-[#D3CBB8] bg-[#F3EFE4] text-stone-600";
 
   const activeBadgeClass = dark
-    ? "border-cyan-400/60 bg-cyan-500/20 text-cyan-300"
+    ? "border-amber-400/60 bg-amber-500/20 text-amber-300"
     : "border-clay bg-clay/15 text-clay font-semibold";
 
   return (
@@ -290,9 +289,8 @@ export default function InsightAgent({ theme }) {
             key={s}
             type="button"
             onClick={() => setSourceFilter(s)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-              sourceFilter === s ? activeBadgeClass : badgeClass
-            }`}
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${sourceFilter === s ? activeBadgeClass : badgeClass
+              }`}
           >
             {s === "All" ? "All" : (SOURCE_CONFIG[s]?.icon || "") + " " + s}
           </button>
@@ -309,9 +307,8 @@ export default function InsightAgent({ theme }) {
             key={p}
             type="button"
             onClick={() => setPriorityFilter(p)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-              priorityFilter === p ? activeBadgeClass : badgeClass
-            }`}
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${priorityFilter === p ? activeBadgeClass : badgeClass
+              }`}
           >
             {p === "All" ? "All" : PRIORITY_CONFIG[p]?.label}
           </button>
@@ -326,11 +323,10 @@ export default function InsightAgent({ theme }) {
               setSourceFilter("All");
               setPriorityFilter("All");
             }}
-            className={`ml-auto rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-              dark
-                ? "border-rose-400/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
-                : "border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100"
-            }`}
+            className={`ml-auto rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${dark
+              ? "border-rose-400/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
+              : "border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100"
+              }`}
           >
             Clear Filters
           </button>
@@ -371,11 +367,10 @@ export default function InsightAgent({ theme }) {
             return (
               <div
                 key={insight.id || idx}
-                className={`rounded-[28px] border p-5 shadow-xl backdrop-blur-xl transition-all hover:scale-[1.005] md:p-6 ${
-                  dark
-                    ? "border-white/10 bg-white/5"
-                    : "border-[#D3CBB8] bg-[#FAF8F5]"
-                }`}
+                className={`rounded-[28px] border p-5 shadow-xl backdrop-blur-xl transition-all hover:scale-[1.005] md:p-6 ${dark
+                  ? "border-white/10 bg-white/5"
+                  : "border-[#D3CBB8] bg-[#FAF8F5]"
+                  }`}
               >
                 <div className="flex flex-col gap-4">
                   {/* Top row: icon + title + time */}
@@ -386,25 +381,22 @@ export default function InsightAgent({ theme }) {
                       </span>
                       <div className="min-w-0 flex-1">
                         <h3
-                          className={`text-base font-semibold ${
-                            dark ? "text-slate-100" : "text-stone-800"
-                          }`}
+                          className={`text-base font-semibold ${dark ? "text-slate-100" : "text-stone-800"
+                            }`}
                         >
                           {insight.title}
                         </h3>
                         <p
-                          className={`mt-1 text-sm leading-6 ${
-                            dark ? "text-slate-400" : "text-stone-500"
-                          }`}
+                          className={`mt-1 text-sm leading-6 ${dark ? "text-slate-400" : "text-stone-500"
+                            }`}
                         >
                           {insight.description}
                         </p>
                       </div>
                     </div>
                     <span
-                      className={`shrink-0 text-xs whitespace-nowrap ${
-                        dark ? "text-slate-500" : "text-stone-400"
-                      }`}
+                      className={`shrink-0 text-xs whitespace-nowrap ${dark ? "text-slate-500" : "text-stone-400"
+                        }`}
                     >
                       {formatDetectedAt(insight.detected_at)}
                     </span>
@@ -429,11 +421,10 @@ export default function InsightAgent({ theme }) {
 
                     {/* Time badge (for mobile clarity) */}
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${
-                        dark
-                          ? "border-white/10 bg-white/5 text-slate-400"
-                          : "border-[#D3CBB8] bg-[#F3EFE4] text-stone-500"
-                      }`}
+                      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${dark
+                        ? "border-white/10 bg-white/5 text-slate-400"
+                        : "border-[#D3CBB8] bg-[#F3EFE4] text-stone-500"
+                        }`}
                     >
                       🕐 {formatDetectedAt(insight.detected_at)}
                     </span>

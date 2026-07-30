@@ -135,9 +135,8 @@ function renderList(items, theme) {
       {listArray.map((item, index) => (
         <li
           key={`${typeof item === 'object' ? JSON.stringify(item) : String(item)}-${index}`}
-          className={`rounded-2xl border px-4 py-3 ${
-            dark ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
-          }`}
+          className={`rounded-2xl border px-4 py-3 ${dark ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
+            }`}
         >
           {renderItemContent(item)}
         </li>
@@ -235,11 +234,10 @@ export default function ResearchCopilot({ theme }) {
                 <button
                   type="button"
                   onClick={handleShareEmail}
-                  className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                    theme === 'dark'
-                      ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
-                      : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-                  }`}
+                  className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
+                    ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
+                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                    }`}
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -249,11 +247,10 @@ export default function ResearchCopilot({ theme }) {
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
-                  className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                    theme === 'dark'
-                      ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'
-                      : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-                  }`}
+                  className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
+                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'
+                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                    }`}
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -266,9 +263,8 @@ export default function ResearchCopilot({ theme }) {
               type="button"
               onClick={submit}
               disabled={loading}
-              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
-              }`}
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+                }`}
             >
               {loading ? "Generating…" : "Generate Research"}
             </button>
@@ -280,11 +276,10 @@ export default function ResearchCopilot({ theme }) {
             value={topic}
             onChange={(event) => setTopic(event.target.value)}
             placeholder="Enter a research topic..."
-            className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition ${
-              theme === "dark"
-                ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-cyan-400/40"
-                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
-            }`}
+            className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition ${theme === "dark"
+              ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+              : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
+              }`}
           />
           {error ? (
             <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
@@ -329,7 +324,7 @@ export default function ResearchCopilot({ theme }) {
 
       <ResultCard
         title="Citations"
-        
+
         theme={theme}
       >
         {renderList(result?.citations, theme)}

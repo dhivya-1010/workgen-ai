@@ -127,9 +127,8 @@ export default function JournalAI({ theme }) {
 
       {/* ---- Progress Bar ---- */}
       <div
-        className={`rounded-[28px] border p-5 shadow-xl ${
-          dark ? "border-white/10 bg-white/5" : "border-[#D3CBB8] bg-[#FAF8F5]"
-        }`}
+        className={`rounded-[28px] border p-5 shadow-xl ${dark ? "border-white/10 bg-white/5" : "border-[#D3CBB8] bg-[#FAF8F5]"
+          }`}
       >
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className={dark ? "text-slate-400" : "text-stone-500"}>
@@ -138,9 +137,8 @@ export default function JournalAI({ theme }) {
           <span className="font-semibold">{stats.progress}%</span>
         </div>
         <div
-          className={`h-3 w-full overflow-hidden rounded-full ${
-            dark ? "bg-slate-800" : "bg-stone-200"
-          }`}
+          className={`h-3 w-full overflow-hidden rounded-full ${dark ? "bg-slate-800" : "bg-stone-200"
+            }`}
         >
           <div
             className={`h-full rounded-full transition-all duration-500 ${progressColor}`}
@@ -166,11 +164,10 @@ export default function JournalAI({ theme }) {
             type="button"
             onClick={addTask}
             disabled={loading}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-              dark
-                ? "bg-cyan-400 text-slate-950 hover:bg-cyan-300"
-                : "bg-clay text-white hover:bg-clay/90"
-            }`}
+            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark
+              ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+              : "bg-clay text-white hover:bg-clay/90"
+              }`}
           >
             Add Task
           </button>
@@ -186,11 +183,10 @@ export default function JournalAI({ theme }) {
             }
           }}
           placeholder="Add a task, e.g. Prepare standup notes"
-          className={`w-full rounded-[28px] border px-5 py-4 text-sm outline-none transition ${
-            dark
-              ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-cyan-400/40"
-              : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
-          }`}
+          className={`w-full rounded-[28px] border px-5 py-4 text-sm outline-none transition ${dark
+            ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+            : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
+            }`}
         />
       </ResultCard>
 
@@ -215,16 +211,14 @@ export default function JournalAI({ theme }) {
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 ${
-                    dark
-                      ? "border-white/10 bg-white/5"
-                      : "border-[#D3CBB8] bg-[#FAF8F5]"
-                  }`}
+                  className={`flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 ${dark
+                    ? "border-white/10 bg-white/5"
+                    : "border-[#D3CBB8] bg-[#FAF8F5]"
+                    }`}
                 >
                   <span
-                    className={`text-left text-sm ${
-                      dark ? "text-slate-100" : "text-stone-800"
-                    }`}
+                    className={`text-left text-sm ${dark ? "text-slate-100" : "text-stone-800"
+                      }`}
                   >
                     {task.title}
                   </span>
@@ -233,22 +227,20 @@ export default function JournalAI({ theme }) {
                     <button
                       type="button"
                       onClick={() => markDone(task.id)}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${
-                        dark
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-emerald-100 text-emerald-700"
-                      }`}
+                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${dark
+                        ? "bg-emerald-500/20 text-emerald-300"
+                        : "bg-emerald-100 text-emerald-700"
+                        }`}
                     >
                       Done
                     </button>
                     <button
                       type="button"
                       onClick={() => removeTask(task.id)}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${
-                        dark
-                          ? "bg-rose-500/15 text-rose-300"
-                          : "bg-rose-100 text-rose-700"
-                      }`}
+                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${dark
+                        ? "bg-rose-500/15 text-rose-300"
+                        : "bg-rose-100 text-rose-700"
+                        }`}
                     >
                       Delete
                     </button>
@@ -291,39 +283,34 @@ export default function JournalAI({ theme }) {
               {unreadEmails.map((email) => (
                 <div
                   key={email.id}
-                  className={`rounded-2xl border px-4 py-3 ${
-                    dark
-                      ? "border-white/10 bg-white/5"
-                      : "border-[#D3CBB8] bg-[#FAF8F5]"
-                  }`}
+                  className={`rounded-2xl border px-4 py-3 ${dark
+                    ? "border-white/10 bg-white/5"
+                    : "border-[#D3CBB8] bg-[#FAF8F5]"
+                    }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <p
-                        className={`truncate text-sm font-semibold ${
-                          dark ? "text-slate-100" : "text-stone-800"
-                        }`}
+                        className={`truncate text-sm font-semibold ${dark ? "text-slate-100" : "text-stone-800"
+                          }`}
                       >
                         {email.subject}
                       </p>
                       <p
-                        className={`mt-0.5 truncate text-xs ${
-                          dark ? "text-slate-400" : "text-stone-500"
-                        }`}
+                        className={`mt-0.5 truncate text-xs ${dark ? "text-slate-400" : "text-stone-500"
+                          }`}
                       >
                         {email.sender}
                       </p>
                     </div>
                     <span
-                      className={`inline-flex h-2 w-2 shrink-0 rounded-full ${
-                        dark ? "bg-cyan-400" : "bg-clay"
-                      }`}
+                      className={`inline-flex h-2 w-2 shrink-0 rounded-full ${dark ? "bg-amber-400" : "bg-clay"
+                        }`}
                     />
                   </div>
                   <p
-                    className={`mt-2 line-clamp-2 text-xs leading-5 ${
-                      dark ? "text-slate-500" : "text-stone-500"
-                    }`}
+                    className={`mt-2 line-clamp-2 text-xs leading-5 ${dark ? "text-slate-500" : "text-stone-500"
+                      }`}
                   >
                     {email.preview || "No preview available."}
                   </p>
@@ -341,11 +328,10 @@ export default function JournalAI({ theme }) {
 function StatCard({ label, value, theme, dark }) {
   return (
     <div
-      className={`rounded-[28px] border p-5 shadow-xl transition ${
-        dark
-          ? "border-white/10 bg-white/5"
-          : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-850"
-      }`}
+      className={`rounded-[28px] border p-5 shadow-xl transition ${dark
+        ? "border-white/10 bg-white/5"
+        : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-850"
+        }`}
     >
       <p className={`text-sm ${dark ? "text-slate-400" : "text-stone-500"}`}>
         {label}

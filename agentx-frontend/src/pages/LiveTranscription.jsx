@@ -44,7 +44,7 @@ export default function LiveTranscription({ theme }) {
     } catch {
       try {
         recognition.abort();
-      } catch {}
+      } catch { }
     }
 
     recognitionRef.current = null;
@@ -199,13 +199,12 @@ export default function LiveTranscription({ theme }) {
             type="button"
             onClick={handleToggleListening}
             disabled={loading && !isListening}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-              isListening
-                ? "bg-rose-600 text-white hover:bg-rose-500"
-                : theme === "dark"
-                  ? "bg-cyan-400 text-slate-950 hover:bg-cyan-300"
-                  : "bg-clay text-white hover:bg-clay/90"
-            }`}
+            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${isListening
+              ? "bg-rose-600 text-white hover:bg-rose-500"
+              : theme === "dark"
+                ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+                : "bg-clay text-white hover:bg-clay/90"
+              }`}
           >
             {loading
               ? "Starting…"
@@ -219,26 +218,24 @@ export default function LiveTranscription({ theme }) {
           className={`flex flex-wrap items-center gap-3 text-sm ${theme === "dark" ? "text-slate-400" : "text-stone-500"}`}
         >
           <span
-            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 ${
-              isListening
-                ? theme === "dark"
-                  ? "border-rose-400/30 bg-rose-500/10 text-rose-300"
-                  : "border-rose-600/20 bg-rose-600/10 text-rose-700 font-semibold"
-                : theme === "dark"
-                  ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-300"
-                  : "border-forest/20 bg-forest/10 text-forest font-semibold"
-            }`}
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 ${isListening
+              ? theme === "dark"
+                ? "border-rose-400/30 bg-rose-500/10 text-rose-300"
+                : "border-rose-600/20 bg-rose-600/10 text-rose-700 font-semibold"
+              : theme === "dark"
+                ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-300"
+                : "border-forest/20 bg-forest/10 text-forest font-semibold"
+              }`}
           >
             <span
-              className={`h-2.5 w-2.5 rounded-full ${
-                isListening
-                  ? theme === "dark"
-                    ? "bg-rose-300 animate-pulse"
-                    : "bg-rose-600 animate-pulse"
-                  : theme === "dark"
-                    ? "bg-emerald-300"
-                    : "bg-forest"
-              }`}
+              className={`h-2.5 w-2.5 rounded-full ${isListening
+                ? theme === "dark"
+                  ? "bg-rose-300 animate-pulse"
+                  : "bg-rose-600 animate-pulse"
+                : theme === "dark"
+                  ? "bg-emerald-300"
+                  : "bg-forest"
+                }`}
             />
             {isListening
               ? `Recording… ${formattedDuration}`
@@ -275,11 +272,10 @@ export default function LiveTranscription({ theme }) {
           theme={theme}
         >
           <div
-            className={`min-h-[320px] max-h-[500px] overflow-y-auto rounded-[28px] border p-5 text-sm leading-8 transition ${
-              theme === "dark"
-                ? "border-white/10 bg-slate-950/70 text-slate-200"
-                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
-            }`}
+            className={`min-h-[320px] max-h-[500px] overflow-y-auto rounded-[28px] border p-5 text-sm leading-8 transition ${theme === "dark"
+              ? "border-white/10 bg-slate-950/70 text-slate-200"
+              : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
+              }`}
           >
             {displayTranscript ? (
               <>
@@ -301,7 +297,7 @@ export default function LiveTranscription({ theme }) {
                 ) : null}
                 {isListening && (
                   <span
-                    className={`inline-block h-4 w-1.5 ml-0.5 animate-pulse ${theme === "dark" ? "bg-cyan-400" : "bg-clay"}`}
+                    className={`inline-block h-4 w-1.5 ml-0.5 animate-pulse ${theme === "dark" ? "bg-amber-400" : "bg-clay"}`}
                   />
                 )}
               </>
@@ -324,11 +320,10 @@ export default function LiveTranscription({ theme }) {
             className={`space-y-3 text-sm ${theme === "dark" ? "text-slate-300" : "text-stone-750"}`}
           >
             <div
-              className={`rounded-2xl border px-4 py-3 ${
-                theme === "dark"
-                  ? "border-white/10 bg-white/5"
-                  : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
-              }`}
+              className={`rounded-2xl border px-4 py-3 ${theme === "dark"
+                ? "border-white/10 bg-white/5"
+                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
+                }`}
             >
               <span className="font-semibold">Status:</span>{" "}
               <span
@@ -346,30 +341,27 @@ export default function LiveTranscription({ theme }) {
               </span>
             </div>
             <div
-              className={`rounded-2xl border px-4 py-3 ${
-                theme === "dark"
-                  ? "border-white/10 bg-white/5"
-                  : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
-              }`}
+              className={`rounded-2xl border px-4 py-3 ${theme === "dark"
+                ? "border-white/10 bg-white/5"
+                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
+                }`}
             >
               <span className="font-semibold">Duration:</span>{" "}
               {isListening ? formattedDuration : "—"}
             </div>
             <div
-              className={`rounded-2xl border px-4 py-3 ${
-                theme === "dark"
-                  ? "border-white/10 bg-white/5"
-                  : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
-              }`}
+              className={`rounded-2xl border px-4 py-3 ${theme === "dark"
+                ? "border-white/10 bg-white/5"
+                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
+                }`}
             >
               <span className="font-semibold">Segments:</span> {segments.length}
             </div>
             <div
-              className={`rounded-2xl border px-4 py-3 ${
-                theme === "dark"
-                  ? "border-white/10 bg-white/5"
-                  : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
-              }`}
+              className={`rounded-2xl border px-4 py-3 ${theme === "dark"
+                ? "border-white/10 bg-white/5"
+                : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800"
+                }`}
             >
               <span className="font-semibold">Mode:</span> Browser speech
               recognition

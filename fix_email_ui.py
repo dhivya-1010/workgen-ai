@@ -15,7 +15,7 @@ function normalizeEmailScan(data) {
 function typeTone(type) {
   const value = String(type || "Unknown").toLowerCase();
   if (value.includes("meeting"))
-    return "bg-sky-500/15 text-sky-300 border-sky-400/30";
+    return "bg-yellow-500/15 text-yellow-300 border-yellow-400/30";
   if (value.includes("task"))
     return "bg-amber-500/15 text-amber-300 border-amber-400/30";
   if (value.includes("exam"))
@@ -93,7 +93,7 @@ export default function EmailIntelligence({ theme }) {
         theme={theme}
         actions={
           <button type="button" onClick={scan} disabled={loading}
-            className="rounded-2xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60">
+            className="rounded-2xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60">
             {loading ? "Scanning..." : "Scan Emails"}
           </button>
         }>
@@ -139,7 +139,7 @@ export default function EmailIntelligence({ theme }) {
                         <span key={`action-${ai}`}
                           className={`rounded-lg px-3 py-1 text-xs font-medium ${
                             action.includes("calendar_added") ? "bg-emerald-500/15 text-emerald-300" :
-                            action.includes("notion_added") ? "bg-violet-500/15 text-violet-300" :
+                            action.includes("notion_added") ? "bg-yellow-500/15 text-violet-300" :
                             action.includes("skipped") ? "bg-amber-500/10 text-amber-300" :
                             "bg-slate-500/10 text-slate-400"
                           }`}>
@@ -148,7 +148,7 @@ export default function EmailIntelligence({ theme }) {
                           {action.includes("skipped") ? "⚠ Skipped" : null}
                         </span>
                       )) : email.start ? (
-                        <span className="text-xs text-cyan-400">Auto-processing on scan...</span>
+                        <span className="text-xs text-amber-400">Auto-processing on scan...</span>
                       ) : (
                         <span className="text-xs text-amber-400">No date found - skipped auto-processing</span>
                       )}
@@ -170,7 +170,7 @@ export default function EmailIntelligence({ theme }) {
                 <div key={`event-${index}`} className={`rounded-2xl border p-4 ${cardClass}`}>
                   <div className="font-semibold">{event.title || event.summary || "Untitled event"}</div>
                   <div className="mt-1 text-sm text-slate-400">{event.datetime || event.start_time || event.start || "Time not provided"}</div>
-                  <div className="mt-3 text-xs uppercase tracking-[0.2em] text-cyan-400">{event.source || "calendar sync"}</div>
+                  <div className="mt-3 text-xs uppercase tracking-[0.2em] text-amber-400">{event.source || "calendar sync"}</div>
               ))
             )}
           </div>

@@ -120,9 +120,9 @@ export default function OrganizationKnowledge({ theme }) {
               type="file"
               accept=".pdf,.docx,.txt"
               onChange={handleFileSelect}
-              className={`block w-full max-w-md rounded-2xl border text-sm file:mr-4 file:rounded-xl file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold ${dark ? 'border-white/10 bg-slate-950/70 text-slate-50 file:bg-cyan-400 file:text-slate-950 file:hover:bg-cyan-300' : 'border-[#D3CBB8] bg-[#FAF8F5] text-stone-850 file:bg-clay file:text-white file:hover:bg-clay/90'}`}
+              className={`block w-full max-w-md rounded-2xl border text-sm file:mr-4 file:rounded-xl file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold ${dark ? 'border-white/10 bg-slate-950/70 text-slate-50 file:bg-amber-400 file:text-slate-950 file:hover:bg-amber-300' : 'border-[#D3CBB8] bg-[#FAF8F5] text-stone-850 file:bg-clay file:text-white file:hover:bg-clay/90'}`}
             />
-            <button type="button" onClick={handleUpload} disabled={!selectedFile || uploading} className={`rounded-2xl px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'}`}>
+            <button type="button" onClick={handleUpload} disabled={!selectedFile || uploading} className={`rounded-2xl px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'}`}>
               {uploading ? 'Uploading & Processing...' : 'Upload & Index'}
             </button>
           </div>
@@ -162,13 +162,13 @@ export default function OrganizationKnowledge({ theme }) {
 
       <ResultCard title="Ask About Organization Documents" subtitle="Ask questions in natural language. Answers are strictly based on uploaded documents." theme={theme}
         actions={
-          <button type="button" onClick={handleAsk} disabled={asking || !question.trim()} className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'}`}>
+          <button type="button" onClick={handleAsk} disabled={asking || !question.trim()} className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'}`}>
             {asking ? 'Thinking...' : 'Ask'}
           </button>
         }
       >
         <textarea value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="e.g., What is the dress code on Mondays?" rows={2}
-          className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition resize-none ${dark ? 'border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-cyan-400/40' : 'border-[#D3CBB8] bg-[#FAF8F5] text-stone-850 placeholder:text-stone-400 focus:border-clay'}`}
+          className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition resize-none ${dark ? 'border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40' : 'border-[#D3CBB8] bg-[#FAF8F5] text-stone-850 placeholder:text-stone-400 focus:border-clay'}`}
         />
         {error && (
           <div className="mt-3 rounded-2xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">{error}</div>
@@ -176,76 +176,70 @@ export default function OrganizationKnowledge({ theme }) {
       </ResultCard>
 
       {answer && (
-  <ResultCard
-    title="Answer"
-    subtitle="Generated from organization documents"
-    theme={theme}
-  >
-    <div className="space-y-3">
-      <div
-        className={`rounded-2xl border p-4 leading-7 ${
-          answer.found
-            ? dark
-              ? 'border-emerald-400/30 bg-emerald-500/10'
-              : 'border-emerald-400/20 bg-emerald-50'
-            : dark
-            ? 'border-amber-400/30 bg-amber-500/10'
-            : 'border-amber-400/20 bg-amber-50'
-        }`}
-      >
-        <div
-          className={`mb-2 text-sm font-semibold ${
-            answer.found
-              ? dark
-                ? 'text-emerald-400'
-                : 'text-emerald-700'
-              : dark
-              ? 'text-amber-400'
-              : 'text-amber-700'
-          }`}
+        <ResultCard
+          title="Answer"
+          subtitle="Generated from organization documents"
+          theme={theme}
         >
-          {answer.found
-            ? 'Found in documents'
-            : 'Not found in documents'}
-        </div>
+          <div className="space-y-3">
+            <div
+              className={`rounded-2xl border p-4 leading-7 ${answer.found
+                ? dark
+                  ? 'border-emerald-400/30 bg-emerald-500/10'
+                  : 'border-emerald-400/20 bg-emerald-50'
+                : dark
+                  ? 'border-amber-400/30 bg-amber-500/10'
+                  : 'border-amber-400/20 bg-amber-50'
+                }`}
+            >
+              <div
+                className={`mb-2 text-sm font-semibold ${answer.found
+                  ? dark
+                    ? 'text-emerald-400'
+                    : 'text-emerald-700'
+                  : dark
+                    ? 'text-amber-400'
+                    : 'text-amber-700'
+                  }`}
+              >
+                {answer.found
+                  ? 'Found in documents'
+                  : 'Not found in documents'}
+              </div>
 
-        <div
-          className={`whitespace-pre-wrap text-sm ${
-            dark ? 'text-slate-200' : 'text-stone-800'
-          }`}
-        >
-          {answer.answer}
-        </div>
-      </div>
+              <div
+                className={`whitespace-pre-wrap text-sm ${dark ? 'text-slate-200' : 'text-stone-800'
+                  }`}
+              >
+                {answer.answer}
+              </div>
+            </div>
 
-      {answer.context_used && (
-        <details
-          className={`rounded-2xl border p-3 text-xs ${
-            dark
-              ? 'border-white/10 bg-white/5'
-              : 'border-[#D3CBB8] bg-[#FAF8F5]'
-          }`}
-        >
-          <summary
-            className={`cursor-pointer font-semibold ${
-              dark ? 'text-slate-400' : 'text-stone-500'
-            }`}
-          >
-            View Retrieved Context ({answer.context_used.length} chars)
-          </summary>
+            {answer.context_used && (
+              <details
+                className={`rounded-2xl border p-3 text-xs ${dark
+                  ? 'border-white/10 bg-white/5'
+                  : 'border-[#D3CBB8] bg-[#FAF8F5]'
+                  }`}
+              >
+                <summary
+                  className={`cursor-pointer font-semibold ${dark ? 'text-slate-400' : 'text-stone-500'
+                    }`}
+                >
+                  View Retrieved Context ({answer.context_used.length} chars)
+                </summary>
 
-          <pre
-            className={`mt-2 max-h-60 overflow-auto whitespace-pre-wrap break-words ${
-              dark ? 'text-slate-400' : 'text-stone-500'
-            }`}
-          >
-            {answer.context_used}
-          </pre>
-        </details>
+                <pre
+                  className={`mt-2 max-h-60 overflow-auto whitespace-pre-wrap break-words ${dark ? 'text-slate-400' : 'text-stone-500'
+                    }`}
+                >
+                  {answer.context_used}
+                </pre>
+              </details>
+            )}
+          </div>
+        </ResultCard>
       )}
-    </div>
-  </ResultCard>
-)}
 
       {(status?.has_documents || uploadResult?.success || answer) && (
         <div className="grid gap-4 md:grid-cols-2">

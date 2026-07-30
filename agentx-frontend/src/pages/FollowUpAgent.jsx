@@ -44,15 +44,15 @@ const PRIORITY_COLORS_LIGHT = {
 };
 
 const SOURCE_COLORS = {
-  Email: "bg-sky-500/15 text-sky-300 border-sky-400/30",
-  Meeting: "bg-violet-500/15 text-violet-300 border-violet-400/30",
-  Task: "bg-cyan-500/15 text-cyan-300 border-cyan-400/30",
+  Email: "bg-yellow-500/15 text-yellow-300 border-yellow-400/30",
+  Meeting: "bg-yellow-500/15 text-violet-300 border-violet-400/30",
+  Task: "bg-amber-500/15 text-amber-300 border-amber-400/30",
 };
 
 const SOURCE_COLORS_LIGHT = {
-  Email: "bg-sky-100 text-sky-700 border-sky-300",
+  Email: "bg-sky-100 text-sky-700 border-yellow-300",
   Meeting: "bg-violet-100 text-violet-700 border-violet-300",
-  Task: "bg-cyan-100 text-cyan-700 border-cyan-300",
+  Task: "bg-cyan-100 text-cyan-700 border-amber-300",
 };
 
 function getTodayISO() {
@@ -196,7 +196,7 @@ export default function FollowUpAgent({ theme }) {
     : "border-[#D3CBB8] bg-[#FAF8F5]";
 
   const inputClass = dark
-    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-cyan-400/40"
+    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
     : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay";
 
   const badgeClass = dark
@@ -204,7 +204,7 @@ export default function FollowUpAgent({ theme }) {
     : "border-[#D3CBB8] bg-[#F3EFE4] text-stone-600";
 
   const activeBadgeClass = dark
-    ? "border-cyan-400/60 bg-cyan-500/20 text-cyan-300"
+    ? "border-amber-400/60 bg-amber-500/20 text-amber-300"
     : "border-clay bg-clay/15 text-clay font-semibold";
 
   return (
@@ -246,11 +246,10 @@ export default function FollowUpAgent({ theme }) {
           <button
             type="button"
             onClick={() => setShowForm(!showForm)}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
-              dark
-                ? "bg-cyan-400 text-slate-950 hover:bg-cyan-300"
-                : "bg-clay text-white hover:bg-clay/90"
-            }`}
+            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${dark
+              ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+              : "bg-clay text-white hover:bg-clay/90"
+              }`}
           >
             {showForm ? "Cancel" : "+ New Follow-Up"}
           </button>
@@ -308,11 +307,10 @@ export default function FollowUpAgent({ theme }) {
                 type="button"
                 onClick={handleCreate}
                 disabled={!newTitle.trim()}
-                className={`rounded-2xl px-6 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                  dark
-                    ? "bg-cyan-400 text-slate-950 hover:bg-cyan-300"
-                    : "bg-clay text-white hover:bg-clay/90"
-                }`}
+                className={`rounded-2xl px-6 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark
+                  ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+                  : "bg-clay text-white hover:bg-clay/90"
+                  }`}
               >
                 Create Follow-Up
               </button>
@@ -341,9 +339,8 @@ export default function FollowUpAgent({ theme }) {
             key={s}
             type="button"
             onClick={() => setStatusFilter(s)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-              statusFilter === s ? activeBadgeClass : badgeClass
-            }`}
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${statusFilter === s ? activeBadgeClass : badgeClass
+              }`}
           >
             {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
           </button>
@@ -359,9 +356,8 @@ export default function FollowUpAgent({ theme }) {
             key={p}
             type="button"
             onClick={() => setPriorityFilter(p)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-              priorityFilter === p ? activeBadgeClass : badgeClass
-            }`}
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${priorityFilter === p ? activeBadgeClass : badgeClass
+              }`}
           >
             {p === "all" ? "All" : p.charAt(0).toUpperCase() + p.slice(1)}
           </button>
@@ -370,22 +366,21 @@ export default function FollowUpAgent({ theme }) {
         {(statusFilter !== "all" ||
           priorityFilter !== "all" ||
           search.trim()) && (
-          <button
-            type="button"
-            onClick={() => {
-              setSearch("");
-              setStatusFilter("all");
-              setPriorityFilter("all");
-            }}
-            className={`ml-auto rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-              dark
+            <button
+              type="button"
+              onClick={() => {
+                setSearch("");
+                setStatusFilter("all");
+                setPriorityFilter("all");
+              }}
+              className={`ml-auto rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${dark
                 ? "border-rose-400/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
                 : "border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100"
-            }`}
-          >
-            Clear Filters
-          </button>
-        )}
+                }`}
+            >
+              Clear Filters
+            </button>
+          )}
       </div>
 
       {/* ---- Follow-Up Cards ---- */}
@@ -415,17 +410,16 @@ export default function FollowUpAgent({ theme }) {
             return (
               <div
                 key={followup.id}
-                className={`rounded-[28px] border p-5 shadow-xl backdrop-blur-xl transition-all md:p-6 ${
-                  completed
+                className={`rounded-[28px] border p-5 shadow-xl backdrop-blur-xl transition-all md:p-6 ${completed
+                  ? dark
+                    ? "border-white/5 bg-white/3 opacity-60"
+                    : "border-[#D3CBB8] bg-[#F3EFE4] opacity-60"
+                  : overdue
                     ? dark
-                      ? "border-white/5 bg-white/3 opacity-60"
-                      : "border-[#D3CBB8] bg-[#F3EFE4] opacity-60"
-                    : overdue
-                      ? dark
-                        ? "border-rose-400/30 bg-rose-500/10 shadow-rose-500/10"
-                        : "border-rose-300 bg-rose-50/80 shadow-rose-500/5"
-                      : cardClass
-                }`}
+                      ? "border-rose-400/30 bg-rose-500/10 shadow-rose-500/10"
+                      : "border-rose-300 bg-rose-50/80 shadow-rose-500/5"
+                    : cardClass
+                  }`}
               >
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   {/* Left: Info */}
@@ -434,15 +428,14 @@ export default function FollowUpAgent({ theme }) {
                     <button
                       type="button"
                       onClick={() => toggleStatus(followup)}
-                      className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition ${
-                        completed
-                          ? dark
-                            ? "border-emerald-400 bg-emerald-500/30 text-emerald-300"
-                            : "border-emerald-500 bg-emerald-100 text-emerald-700"
-                          : dark
-                            ? "border-white/20 hover:border-cyan-400/50"
-                            : "border-[#D3CBB8] hover:border-clay"
-                      }`}
+                      className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition ${completed
+                        ? dark
+                          ? "border-emerald-400 bg-emerald-500/30 text-emerald-300"
+                          : "border-emerald-500 bg-emerald-100 text-emerald-700"
+                        : dark
+                          ? "border-white/20 hover:border-amber-400/50"
+                          : "border-[#D3CBB8] hover:border-clay"
+                        }`}
                     >
                       {completed && <span className="text-xs">✓</span>}
                     </button>
@@ -450,15 +443,14 @@ export default function FollowUpAgent({ theme }) {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3
-                          className={`text-base font-semibold truncate ${
-                            completed
-                              ? dark
-                                ? "text-slate-500 line-through"
-                                : "text-stone-400 line-through"
-                              : dark
-                                ? "text-slate-100"
-                                : "text-stone-800"
-                          }`}
+                          className={`text-base font-semibold truncate ${completed
+                            ? dark
+                              ? "text-slate-500 line-through"
+                              : "text-stone-400 line-through"
+                            : dark
+                              ? "text-slate-100"
+                              : "text-stone-800"
+                            }`}
                         >
                           {followup.title}
                         </h3>
@@ -466,11 +458,10 @@ export default function FollowUpAgent({ theme }) {
                         {/* Overdue badge */}
                         {overdue && (
                           <span
-                            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.15em] ${
-                              dark
-                                ? "border-rose-400/40 bg-rose-500/20 text-rose-300"
-                                : "border-rose-300 bg-rose-100 text-rose-700"
-                            }`}
+                            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.15em] ${dark
+                              ? "border-rose-400/40 bg-rose-500/20 text-rose-300"
+                              : "border-rose-300 bg-rose-100 text-rose-700"
+                              }`}
                           >
                             ⏰ Overdue
                           </span>
@@ -499,17 +490,16 @@ export default function FollowUpAgent({ theme }) {
                         {/* Due date */}
                         {followup.due_date && (
                           <span
-                            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${
-                              overdue
+                            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${overdue
+                              ? dark
+                                ? "border-rose-400/30 bg-rose-500/10 text-rose-300"
+                                : "border-rose-300 bg-rose-50 text-rose-700"
+                              : completed
                                 ? dark
-                                  ? "border-rose-400/30 bg-rose-500/10 text-rose-300"
-                                  : "border-rose-300 bg-rose-50 text-rose-700"
-                                : completed
-                                  ? dark
-                                    ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-300"
-                                    : "border-emerald-300 bg-emerald-50 text-emerald-700"
-                                  : badgeClass
-                            }`}
+                                  ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-300"
+                                  : "border-emerald-300 bg-emerald-50 text-emerald-700"
+                                : badgeClass
+                              }`}
                           >
                             📅{" "}
                             {new Date(
@@ -530,26 +520,24 @@ export default function FollowUpAgent({ theme }) {
                     <button
                       type="button"
                       onClick={() => toggleStatus(followup)}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                        completed
-                          ? dark
-                            ? "bg-amber-500/15 text-amber-300 hover:bg-amber-500/25"
-                            : "bg-amber-100 text-amber-700 hover:bg-amber-200"
-                          : dark
-                            ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25"
-                            : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
-                      }`}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${completed
+                        ? dark
+                          ? "bg-amber-500/15 text-amber-300 hover:bg-amber-500/25"
+                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                        : dark
+                          ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25"
+                          : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                        }`}
                     >
                       {completed ? "Reopen" : "Complete"}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(followup.id)}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                        dark
-                          ? "bg-rose-500/15 text-rose-300 hover:bg-rose-500/25"
-                          : "bg-rose-100 text-rose-700 hover:bg-rose-200"
-                      }`}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${dark
+                        ? "bg-rose-500/15 text-rose-300 hover:bg-rose-500/25"
+                        : "bg-rose-100 text-rose-700 hover:bg-rose-200"
+                        }`}
                     >
                       Delete
                     </button>
@@ -568,11 +556,10 @@ export default function FollowUpAgent({ theme }) {
 function StatCard({ label, value, theme, dark }) {
   return (
     <div
-      className={`rounded-[28px] border p-5 shadow-xl transition ${
-        dark
-          ? "border-white/10 bg-white/5"
-          : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-850"
-      }`}
+      className={`rounded-[28px] border p-5 shadow-xl transition ${dark
+        ? "border-white/10 bg-white/5"
+        : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-850"
+        }`}
     >
       <p className={`text-sm ${dark ? "text-slate-400" : "text-stone-500"}`}>
         {label}

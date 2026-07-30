@@ -18,7 +18,7 @@ function typeTone(type, theme) {
   const dark = theme === 'dark'
   const value = String(type || 'Unknown').toLowerCase()
   if (dark) {
-    if (value.includes('meeting')) return 'bg-sky-500/15 text-sky-300 border-sky-400/30'
+    if (value.includes('meeting')) return 'bg-yellow-500/15 text-yellow-300 border-yellow-400/30'
     if (value.includes('task')) return 'bg-amber-500/15 text-amber-300 border-amber-400/30'
     if (value.includes('exam')) return 'bg-rose-500/15 text-rose-300 border-rose-400/30'
     return 'bg-emerald-500/15 text-emerald-300 border-emerald-400/30'
@@ -124,11 +124,10 @@ export default function EmailIntelligence({ theme }) {
               <button
                 type="button"
                 onClick={handleShareAllEmails}
-                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                  theme === 'dark'
-                    ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
-                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-                }`}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
+                  ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
+                  : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                  }`}
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -140,9 +139,8 @@ export default function EmailIntelligence({ theme }) {
               type="button"
               onClick={scan}
               disabled={loading}
-              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
-              }`}
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+                }`}
             >
               {loading ? 'Scanning…' : 'Scan Emails'}
             </button>
@@ -186,11 +184,10 @@ export default function EmailIntelligence({ theme }) {
                         type="button"
                         onClick={() => handleAction('calendar', email, index)}
                         disabled={busyAction === `calendar-${index}`}
-                        className={`rounded-2xl px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                          theme === 'dark'
-                            ? 'bg-slate-900/80 text-white ring-1 ring-white/10 hover:bg-slate-800'
-                            : 'bg-[#2F5D50] text-white hover:bg-forest/90'
-                        }`}
+                        className={`rounded-2xl px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark'
+                          ? 'bg-slate-900/80 text-white ring-1 ring-white/10 hover:bg-slate-800'
+                          : 'bg-[#2F5D50] text-white hover:bg-forest/90'
+                          }`}
                       >
                         {busyAction === `calendar-${index}` ? 'Adding…' : 'Add to Calendar'}
                       </button>
@@ -198,22 +195,20 @@ export default function EmailIntelligence({ theme }) {
                         type="button"
                         onClick={() => handleAction('notion', email, index)}
                         disabled={busyAction === `notion-${index}`}
-                        className={`rounded-2xl border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                          theme === 'dark'
-                            ? 'border-cyan-400/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/15'
-                            : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
-                        }`}
+                        className={`rounded-2xl border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark'
+                          ? 'border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/15'
+                          : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
+                          }`}
                       >
                         {busyAction === `notion-${index}` ? 'Saving…' : 'Save to Notion'}
                       </button>
                       <button
                         type="button"
                         onClick={() => handleShareSingleEmail(email)}
-                        className={`flex items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-medium transition ${
-                          theme === 'dark'
-                            ? 'border-purple-400/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/15'
-                            : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
-                        }`}
+                        className={`flex items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-medium transition ${theme === 'dark'
+                          ? 'border-purple-400/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/15'
+                          : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
+                          }`}
                       >
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -228,7 +223,7 @@ export default function EmailIntelligence({ theme }) {
           </div>
         </ResultCard>
 
-        <ResultCard title="Upcoming Events"  theme={theme}>
+        <ResultCard title="Upcoming Events" theme={theme}>
           <div className="space-y-3">
             {payload.events.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-white/10 px-4 py-5 text-sm text-slate-400">
@@ -239,7 +234,7 @@ export default function EmailIntelligence({ theme }) {
                 <div key={`${event.title || event.summary || 'event'}-${index}`} className={`rounded-2xl border p-4 ${cardClass}`}>
                   <div className="font-semibold">{event.title || event.summary || 'Untitled event'}</div>
                   <div className={`mt-1 text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-stone-500'}`}>{event.datetime || event.start_time || event.start || 'Time not provided'}</div>
-                  <div className={`mt-3 text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-cyan-400' : 'text-forest font-semibold'}`}>{event.source || 'calendar sync'}</div>
+                  <div className={`mt-3 text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-amber-400' : 'text-forest font-semibold'}`}>{event.source || 'calendar sync'}</div>
                 </div>
               ))
             )}

@@ -35,7 +35,7 @@ const NAV_ITEMS = [
     icon: "🗂️",
     description:
       "Upload organization policies, handbooks & SOPs. Answers user questions strictly based on uploaded documents.",
-    accent: "from-emerald-500/30 via-cyan-500/15 to-teal-500/10",
+    accent: "from-emerald-500/30 via-amber-500/15 to-teal-500/10",
   },
   {
     id: "email",
@@ -45,7 +45,7 @@ const NAV_ITEMS = [
     icon: "✉️",
     description:
       "Scan inboxes, classify intent, and push detected opportunities into action.",
-    accent: "from-cyan-500/30 via-sky-500/15 to-blue-500/10",
+    accent: "from-amber-500/30 via-yellow-500/15 to-blue-500/10",
   },
   {
     id: "pipeline",
@@ -55,7 +55,7 @@ const NAV_ITEMS = [
     icon: "🎙️",
     description:
       "Surface real-time speech-to-text output in a stage-friendly panel.",
-    accent: "from-indigo-500/30 via-sky-500/15 to-cyan-500/10",
+    accent: "from-amber-600/30 via-yellow-500/15 to-amber-500/10",
   },
   {
     id: "meeting",
@@ -65,7 +65,7 @@ const NAV_ITEMS = [
     icon: "🧠",
     description:
       "Turn raw conversations into summaries, decisions, and next steps.",
-    accent: "from-violet-500/30 via-fuchsia-500/15 to-sky-500/10",
+    accent: "from-yellow-500/30 via-fuchsia-500/15 to-yellow-500/10",
   },
   {
     id: "research",
@@ -75,7 +75,7 @@ const NAV_ITEMS = [
     icon: "🔬",
     description:
       "Generate overviews, questions, outlines, and citations for any topic.",
-    accent: "from-emerald-500/30 via-cyan-500/15 to-teal-500/10",
+    accent: "from-emerald-500/30 via-amber-500/15 to-teal-500/10",
   },
   {
     id: "knowledge-hub",
@@ -85,7 +85,7 @@ const NAV_ITEMS = [
     icon: "🗃️",
     description:
       "Browse and search entries saved into the shared knowledge base.",
-    accent: "from-sky-500/30 via-cyan-500/15 to-indigo-500/10",
+    accent: "from-yellow-500/30 via-amber-500/15 to-amber-600/10",
   },
 
 
@@ -97,7 +97,7 @@ const NAV_ITEMS = [
     icon: "💡",
     description:
       "AI-generated insights from Email Intelligence, Meeting Intelligence, Organizational Knowledge, and Analytics. Filter by source and priority.",
-    accent: "from-indigo-500/30 via-violet-500/15 to-purple-500/10",
+    accent: "from-amber-600/30 via-yellow-500/15 to-purple-500/10",
   },
   {
     id: "journal",
@@ -165,13 +165,13 @@ export default function App() {
     >
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
-          className={`absolute -left-16 top-10 h-64 w-64 rounded-full blur-3xl ${dark ? "bg-cyan-500/12" : "bg-clay/5"}`}
+          className={`absolute -left-16 top-10 h-64 w-64 rounded-full blur-3xl ${dark ? "bg-amber-500/12" : "bg-clay/5"}`}
         />
         <div
-          className={`absolute right-0 top-1/3 h-72 w-72 rounded-full blur-3xl ${dark ? "bg-violet-500/12" : "bg-forest/5"}`}
+          className={`absolute right-0 top-1/3 h-72 w-72 rounded-full blur-3xl ${dark ? "bg-yellow-500/12" : "bg-forest/5"}`}
         />
         <div
-          className={`absolute bottom-0 left-1/3 h-72 w-72 rounded-full blur-3xl ${dark ? "bg-sky-500/10" : "bg-clay/5"}`}
+          className={`absolute bottom-0 left-1/3 h-72 w-72 rounded-full blur-3xl ${dark ? "bg-yellow-500/10" : "bg-clay/5"}`}
         />
       </div>
 
@@ -188,7 +188,7 @@ export default function App() {
             <header className="mb-6 flex flex-col gap-4 lg:mb-8 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p
-                  className={`text-sm font-semibold uppercase tracking-[0.28em] ${dark ? "text-cyan-400" : "text-forest"}`}
+                  className={`text-sm font-semibold uppercase tracking-[0.28em] ${dark ? "text-amber-400" : "text-forest"}`}
                 >
                   {activeItem.caption}
                 </p>

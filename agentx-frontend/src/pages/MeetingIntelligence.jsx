@@ -17,9 +17,8 @@ function renderItems(items, theme) {
       {items.map((item, index) => (
         <li
           key={`${String(item)}-${index}`}
-          className={`rounded-2xl border px-4 py-3 ${
-            dark ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
-          }`}
+          className={`rounded-2xl border px-4 py-3 ${dark ? 'border-white/10 bg-white/5' : 'border-[#D3CBB8] bg-[#FAF8F5]'
+            }`}
         >
           {typeof item === "object" ? JSON.stringify(item) : item}
         </li>
@@ -102,11 +101,10 @@ export default function MeetingIntelligence({ theme }) {
               <button
                 type="button"
                 onClick={handleDownloadPdf}
-                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
-                  theme === 'dark'
-                    ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'
-                    : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
-                }`}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
+                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'
+                  : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
+                  }`}
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -118,9 +116,8 @@ export default function MeetingIntelligence({ theme }) {
               type="button"
               onClick={submit}
               disabled={loading}
-              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                theme === 'dark' ? 'bg-cyan-400 text-slate-950 hover:bg-cyan-300' : 'bg-clay text-white hover:bg-clay/90'
-              }`}
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+                }`}
             >
               {loading ? "Generating…" : "Generate Summary"}
             </button>
@@ -131,11 +128,10 @@ export default function MeetingIntelligence({ theme }) {
           value={transcript}
           onChange={(event) => setTranscript(event.target.value)}
           placeholder="Paste your meeting transcript here..."
-          className={`min-h-[240px] w-full rounded-[28px] border px-5 py-4 text-sm outline-none transition ${
-            theme === "dark"
-              ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-cyan-400/40"
-              : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
-          }`}
+          className={`min-h-[240px] w-full rounded-[28px] border px-5 py-4 text-sm outline-none transition ${theme === "dark"
+            ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+            : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
+            }`}
         />
         {error ? (
           <div className="mt-4 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">

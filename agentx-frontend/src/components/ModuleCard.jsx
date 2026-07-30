@@ -19,7 +19,7 @@ export default function ModuleCard({ title, description, icon, accent, onClick, 
         <p className={`mt-2 text-sm leading-6 ${dark ? 'text-slate-300' : 'text-stone-600'}`}>
           {description}
         </p>
-        <div className={`mt-6 inline-flex items-center gap-2 text-sm font-medium ${dark ? 'text-cyan-300 group-hover:text-cyan-200' : 'text-clay group-hover:text-clay/85'
+        <div className={`mt-6 inline-flex items-center gap-2 text-sm font-medium ${dark ? 'text-amber-300 group-hover:text-cyan-200' : 'text-clay group-hover:text-clay/85'
           }`}>
           Open module <span aria-hidden="true">→</span>
         </div>

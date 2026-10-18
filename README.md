@@ -1,5 +1,5 @@
 # AgentX
-## The AI Operating System for Modern Professionals
+## The AI Operating System for Everyone
 
 > **Capture. Understand. Organize. Act.**
 
@@ -147,14 +147,3 @@ Most AI assistants answer questions.
 By orchestrating specialized AI agents through a shared memory system, AgentX captures, understands, organizes, and acts on professional workflows instead of simply responding to prompts.
 
 ---
-
-# Team
-
-**Team Scadoo**
-
-Sri Eshwar College of Engineering
-
-- Dhivya V
-- Dhanushya T
-
-Built for **AgentVerse Hackathon 2026**.

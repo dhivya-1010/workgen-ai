@@ -1,4 +1,4 @@
-# AgentX
+# AgentX (formally workgen ai)
 ## The AI Operating System for Everyone
 
 > **Capture. Understand. Organize. Act.**

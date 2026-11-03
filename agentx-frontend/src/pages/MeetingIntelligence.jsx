@@ -102,7 +102,7 @@ export default function MeetingIntelligence({ theme }) {
                 type="button"
                 onClick={handleDownloadPdf}
                 className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
-                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'
+                  ? 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
                   : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
                   }`}
               >
@@ -116,7 +116,7 @@ export default function MeetingIntelligence({ theme }) {
               type="button"
               onClick={submit}
               disabled={loading}
-              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-clay text-slate-950 hover:bg-clay' : 'bg-clay text-white hover:bg-clay/90'
                 }`}
             >
               {loading ? "Generating…" : "Generate Summary"}
@@ -129,7 +129,7 @@ export default function MeetingIntelligence({ theme }) {
           onChange={(event) => setTranscript(event.target.value)}
           placeholder="Paste your meeting transcript here..."
           className={`min-h-[240px] w-full rounded-[28px] border px-5 py-4 text-sm outline-none transition ${theme === "dark"
-            ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+            ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-clay/40"
             : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
             }`}
         />

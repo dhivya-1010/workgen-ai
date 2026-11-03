@@ -24,13 +24,13 @@ export default function NextRecommendedStepCard({
   return (
     <div
       className={`relative overflow-hidden rounded-[28px] border p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 md:p-6 ${dark
-        ? "border-amber-500/30 bg-gradient-to-r from-cyan-950/40 via-slate-900/60 to-indigo-950/40 text-slate-100"
+        ? "border-clay/30 bg-slate-900/70 text-slate-100"
         : "border-clay/40 bg-gradient-to-r from-[#FAF6EF] via-[#F3EFE4] to-[#FAF8F5] text-stone-850"
         }`}
     >
       {/* Decorative accent glow */}
       <div
-        className={`pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full blur-2xl ${dark ? "bg-amber-500/15" : "bg-clay/10"
+        className={`pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full blur-2xl ${dark ? "bg-clay/15" : "bg-clay/10"
           }`}
       />
 
@@ -39,7 +39,7 @@ export default function NextRecommendedStepCard({
           <div className="flex flex-wrap items-center gap-2">
             <span
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-xs font-semibold uppercase tracking-wider ${dark
-                ? "border-amber-400/40 bg-amber-500/10 text-amber-300"
+                ? "border-clay/40 bg-clay/10 text-clay"
                 : "border-clay/40 bg-clay/15 text-clay"
                 }`}
             >
@@ -87,7 +87,7 @@ export default function NextRecommendedStepCard({
             type="button"
             onClick={handleNavigate}
             className={`group inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold shadow-lg transition-all transform hover:scale-105 active:scale-95 ${dark
-              ? "bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 hover:from-amber-300 hover:to-yellow-300 shadow-amber-500/20"
+              ? "bg-clay text-slate-950 hover:bg-clay/90 shadow-clay/20"
               : "bg-clay text-white hover:bg-clay/90 shadow-clay/20"
               }`}
           >

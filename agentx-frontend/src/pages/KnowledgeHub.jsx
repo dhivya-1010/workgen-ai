@@ -59,7 +59,7 @@ export default function KnowledgeHub({ theme }) {
             onClick={handleSearch}
             disabled={loading}
             className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark
-              ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+              ? "bg-clay text-slate-950 hover:bg-clay"
               : "bg-clay text-white hover:bg-clay/90"
               }`}
           >
@@ -79,7 +79,7 @@ export default function KnowledgeHub({ theme }) {
             }}
             placeholder="Search the knowledge hub..."
             className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition ${dark
-              ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+              ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-clay/40"
               : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
               }`}
           />
@@ -111,7 +111,7 @@ export default function KnowledgeHub({ theme }) {
               actions={
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-semibold ${dark
-                    ? "bg-amber-500/10 text-amber-300 border border-amber-500/30"
+                    ? "bg-clay/10 text-clay border border-clay/30"
                     : "bg-clay/10 text-clay border border-clay/30"
                     }`}
                 >

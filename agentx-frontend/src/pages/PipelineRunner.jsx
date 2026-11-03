@@ -95,7 +95,7 @@ export default function PipelineRunner({ theme }) {
           <button
             type="submit"
             disabled={loading}
-            className={`rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+            className={`rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-clay text-slate-950 hover:bg-clay' : 'bg-clay text-white hover:bg-clay/90'
               }`}
           >
             {loading ? 'Running pipeline…' : 'Run Pipeline'}
@@ -127,7 +127,7 @@ export default function PipelineRunner({ theme }) {
                 type="button"
                 onClick={handleDownloadPdf}
                 className={`flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-semibold transition ${theme === 'dark'
-                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'
+                  ? 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
                   : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/20'
                   }`}
               >
@@ -142,11 +142,11 @@ export default function PipelineRunner({ theme }) {
 
           <div className="space-y-4 text-sm text-slate-300">
             <div>
-              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-amber-400' : 'text-forest font-semibold'}`}>Summary</div>
+              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-clay' : 'text-forest font-semibold'}`}>Summary</div>
               <p className={`mt-2 leading-7 ${theme === 'dark' ? 'text-slate-300' : 'text-stone-700'}`}>{result.summary_data.summary || 'No summary returned.'}</p>
             </div>
             <div>
-              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-amber-400' : 'text-forest font-semibold'}`}>Notion</div>
+              <div className={`text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-clay' : 'text-forest font-semibold'}`}>Notion</div>
               <p className={`mt-2 leading-7 ${theme === 'dark' ? 'text-slate-300' : 'text-stone-700'}`}>{result.notion?.message || 'No Notion status returned.'}</p>
             </div>
           </div>

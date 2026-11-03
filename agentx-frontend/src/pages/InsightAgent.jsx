@@ -12,15 +12,15 @@ const SOURCE_CONFIG = {
     icon: "✉️",
     label: "Email Intelligence",
     color: {
-      dark: "bg-yellow-500/15 text-yellow-300 border-yellow-400/30",
-      light: "bg-sky-100 text-sky-700 border-yellow-300",
+      dark: "bg-clay/15 text-clay border-clay/30",
+      light: "bg-sky-100 text-sky-700 border-clay",
     },
   },
   Meeting: {
     icon: "🧠",
     label: "Meeting Intelligence",
     color: {
-      dark: "bg-yellow-500/15 text-violet-300 border-violet-400/30",
+      dark: "bg-clay/15 text-violet-300 border-violet-400/30",
       light: "bg-violet-100 text-violet-700 border-violet-300",
     },
   },
@@ -36,8 +36,8 @@ const SOURCE_CONFIG = {
     icon: "📊",
     label: "Analytics",
     color: {
-      dark: "bg-amber-500/15 text-amber-300 border-amber-400/30",
-      light: "bg-amber-100 text-amber-700 border-amber-300",
+      dark: "bg-clay/15 text-clay border-clay/30",
+      light: "bg-clay/10 text-clay border-clay",
     },
   },
 };
@@ -55,11 +55,11 @@ const PRIORITY_CONFIG = {
   medium: {
     label: "Medium",
     color: {
-      dark: "bg-amber-500/15 text-amber-300 border-amber-400/30",
-      light: "bg-amber-100 text-amber-700 border-amber-300",
+      dark: "bg-clay/15 text-clay border-clay/30",
+      light: "bg-clay/10 text-clay border-clay",
     },
-    dot: "bg-amber-400",
-    dotLight: "bg-amber-500",
+    dot: "bg-clay",
+    dotLight: "bg-clay",
   },
   low: {
     label: "Low",
@@ -213,7 +213,7 @@ export default function InsightAgent({ theme }) {
 
   // ------ Styling helpers ------
   const inputClass = dark
-    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-clay/40"
     : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay";
 
   const badgeClass = dark
@@ -221,7 +221,7 @@ export default function InsightAgent({ theme }) {
     : "border-[#D3CBB8] bg-[#F3EFE4] text-stone-600";
 
   const activeBadgeClass = dark
-    ? "border-amber-400/60 bg-amber-500/20 text-amber-300"
+    ? "border-clay/60 bg-clay/20 text-clay"
     : "border-clay bg-clay/15 text-clay font-semibold";
 
   return (

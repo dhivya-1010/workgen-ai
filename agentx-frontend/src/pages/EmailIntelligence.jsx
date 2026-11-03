@@ -18,8 +18,8 @@ function typeTone(type, theme) {
   const dark = theme === 'dark'
   const value = String(type || 'Unknown').toLowerCase()
   if (dark) {
-    if (value.includes('meeting')) return 'bg-yellow-500/15 text-yellow-300 border-yellow-400/30'
-    if (value.includes('task')) return 'bg-amber-500/15 text-amber-300 border-amber-400/30'
+    if (value.includes('meeting')) return 'bg-clay/15 text-clay border-clay/30'
+    if (value.includes('task')) return 'bg-clay/15 text-clay border-clay/30'
     if (value.includes('exam')) return 'bg-rose-500/15 text-rose-300 border-rose-400/30'
     return 'bg-emerald-500/15 text-emerald-300 border-emerald-400/30'
   } else {
@@ -139,7 +139,7 @@ export default function EmailIntelligence({ theme }) {
               type="button"
               onClick={scan}
               disabled={loading}
-              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-amber-400 text-slate-950 hover:bg-amber-300' : 'bg-clay text-white hover:bg-clay/90'
+              className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark' ? 'bg-clay text-slate-950 hover:bg-clay' : 'bg-clay text-white hover:bg-clay/90'
                 }`}
             >
               {loading ? 'Scanning…' : 'Scan Emails'}
@@ -196,7 +196,7 @@ export default function EmailIntelligence({ theme }) {
                         onClick={() => handleAction('notion', email, index)}
                         disabled={busyAction === `notion-${index}`}
                         className={`rounded-2xl border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${theme === 'dark'
-                          ? 'border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/15'
+                          ? 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
                           : 'border-clay/30 bg-clay/10 text-clay hover:bg-clay/15'
                           }`}
                       >
@@ -234,7 +234,7 @@ export default function EmailIntelligence({ theme }) {
                 <div key={`${event.title || event.summary || 'event'}-${index}`} className={`rounded-2xl border p-4 ${cardClass}`}>
                   <div className="font-semibold">{event.title || event.summary || 'Untitled event'}</div>
                   <div className={`mt-1 text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-stone-500'}`}>{event.datetime || event.start_time || event.start || 'Time not provided'}</div>
-                  <div className={`mt-3 text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-amber-400' : 'text-forest font-semibold'}`}>{event.source || 'calendar sync'}</div>
+                  <div className={`mt-3 text-xs uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-clay' : 'text-forest font-semibold'}`}>{event.source || 'calendar sync'}</div>
                 </div>
               ))
             )}

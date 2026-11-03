@@ -92,7 +92,7 @@ export default function JournalAI({ theme }) {
     stats.progress >= 80
       ? "bg-emerald-500"
       : stats.progress >= 50
-        ? "bg-amber-500"
+        ? "bg-clay"
         : "bg-rose-500";
 
   return (
@@ -165,7 +165,7 @@ export default function JournalAI({ theme }) {
             onClick={addTask}
             disabled={loading}
             className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark
-              ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+              ? "bg-clay text-slate-950 hover:bg-clay"
               : "bg-clay text-white hover:bg-clay/90"
               }`}
           >
@@ -184,7 +184,7 @@ export default function JournalAI({ theme }) {
           }}
           placeholder="Add a task, e.g. Prepare standup notes"
           className={`w-full rounded-[28px] border px-5 py-4 text-sm outline-none transition ${dark
-            ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+            ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-clay/40"
             : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay"
             }`}
         />
@@ -266,7 +266,7 @@ export default function JournalAI({ theme }) {
               Loading…
             </div>
           ) : emailError ? (
-            <div className="rounded-2xl border border-amber-400/30 bg-amber-500/10 px-4 py-6 text-sm text-amber-300">
+            <div className="rounded-2xl border border-clay/30 bg-clay/10 px-4 py-6 text-sm text-clay">
               <p className="font-semibold">Gmail API not available</p>
               <p className="mt-1 text-xs opacity-80">
                 {emailError.includes("credentials.json")
@@ -304,7 +304,7 @@ export default function JournalAI({ theme }) {
                       </p>
                     </div>
                     <span
-                      className={`inline-flex h-2 w-2 shrink-0 rounded-full ${dark ? "bg-amber-400" : "bg-clay"
+                      className={`inline-flex h-2 w-2 shrink-0 rounded-full ${dark ? "bg-clay" : "bg-clay"
                         }`}
                     />
                   </div>

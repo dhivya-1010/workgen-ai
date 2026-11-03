@@ -19,8 +19,8 @@ const PRIORITY_COLORS = {
     dot: "bg-rose-400",
   },
   medium: {
-    badge: "bg-amber-500/15 text-amber-300 border-amber-400/30",
-    dot: "bg-amber-400",
+    badge: "bg-clay/15 text-clay border-clay/30",
+    dot: "bg-clay",
   },
   low: {
     badge: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
@@ -34,8 +34,8 @@ const PRIORITY_COLORS_LIGHT = {
     dot: "bg-rose-500",
   },
   medium: {
-    badge: "bg-amber-100 text-amber-700 border-amber-300",
-    dot: "bg-amber-500",
+    badge: "bg-clay/10 text-clay border-clay",
+    dot: "bg-clay",
   },
   low: {
     badge: "bg-emerald-100 text-emerald-700 border-emerald-300",
@@ -44,15 +44,15 @@ const PRIORITY_COLORS_LIGHT = {
 };
 
 const SOURCE_COLORS = {
-  Email: "bg-yellow-500/15 text-yellow-300 border-yellow-400/30",
-  Meeting: "bg-yellow-500/15 text-violet-300 border-violet-400/30",
-  Task: "bg-amber-500/15 text-amber-300 border-amber-400/30",
+  Email: "bg-clay/15 text-clay border-clay/30",
+  Meeting: "bg-clay/15 text-violet-300 border-violet-400/30",
+  Task: "bg-clay/15 text-clay border-clay/30",
 };
 
 const SOURCE_COLORS_LIGHT = {
-  Email: "bg-sky-100 text-sky-700 border-yellow-300",
+  Email: "bg-sky-100 text-sky-700 border-clay",
   Meeting: "bg-violet-100 text-violet-700 border-violet-300",
-  Task: "bg-cyan-100 text-cyan-700 border-amber-300",
+  Task: "bg-cyan-100 text-cyan-700 border-clay",
 };
 
 function getTodayISO() {
@@ -196,7 +196,7 @@ export default function FollowUpAgent({ theme }) {
     : "border-[#D3CBB8] bg-[#FAF8F5]";
 
   const inputClass = dark
-    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-amber-400/40"
+    ? "border-white/10 bg-slate-950/70 text-slate-50 placeholder:text-slate-500 focus:border-clay/40"
     : "border-[#D3CBB8] bg-[#FAF8F5] text-stone-800 placeholder:text-stone-400 focus:border-clay";
 
   const badgeClass = dark
@@ -204,7 +204,7 @@ export default function FollowUpAgent({ theme }) {
     : "border-[#D3CBB8] bg-[#F3EFE4] text-stone-600";
 
   const activeBadgeClass = dark
-    ? "border-amber-400/60 bg-amber-500/20 text-amber-300"
+    ? "border-clay/60 bg-clay/20 text-clay"
     : "border-clay bg-clay/15 text-clay font-semibold";
 
   return (
@@ -247,7 +247,7 @@ export default function FollowUpAgent({ theme }) {
             type="button"
             onClick={() => setShowForm(!showForm)}
             className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${dark
-              ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+              ? "bg-clay text-slate-950 hover:bg-clay"
               : "bg-clay text-white hover:bg-clay/90"
               }`}
           >
@@ -308,7 +308,7 @@ export default function FollowUpAgent({ theme }) {
                 onClick={handleCreate}
                 disabled={!newTitle.trim()}
                 className={`rounded-2xl px-6 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${dark
-                  ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+                  ? "bg-clay text-slate-950 hover:bg-clay"
                   : "bg-clay text-white hover:bg-clay/90"
                   }`}
               >
@@ -433,7 +433,7 @@ export default function FollowUpAgent({ theme }) {
                           ? "border-emerald-400 bg-emerald-500/30 text-emerald-300"
                           : "border-emerald-500 bg-emerald-100 text-emerald-700"
                         : dark
-                          ? "border-white/20 hover:border-amber-400/50"
+                          ? "border-white/20 hover:border-clay/50"
                           : "border-[#D3CBB8] hover:border-clay"
                         }`}
                     >
@@ -522,8 +522,8 @@ export default function FollowUpAgent({ theme }) {
                       onClick={() => toggleStatus(followup)}
                       className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${completed
                         ? dark
-                          ? "bg-amber-500/15 text-amber-300 hover:bg-amber-500/25"
-                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                          ? "bg-clay/15 text-clay hover:bg-clay/25"
+                          : "bg-clay/10 text-clay hover:bg-amber-200"
                         : dark
                           ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25"
                           : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"

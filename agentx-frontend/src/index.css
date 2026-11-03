@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-clay: #b65c38;
-  --color-forest: #2f5d50;
-  --color-paper: #f3efe4;
+  --color-clay: #b86f52;
+  --color-forest: #536b5f;
+  --color-paper: #f6f1e8;
 
   --font-fraunces: "Fraunces", Georgia, serif;
   --font-grotesk: "Space Grotesk", sans-serif;

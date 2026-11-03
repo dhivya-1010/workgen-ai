@@ -202,7 +202,7 @@ export default function LiveTranscription({ theme }) {
             className={`rounded-2xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${isListening
               ? "bg-rose-600 text-white hover:bg-rose-500"
               : theme === "dark"
-                ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+                ? "bg-clay text-slate-950 hover:bg-clay"
                 : "bg-clay text-white hover:bg-clay/90"
               }`}
           >
@@ -297,7 +297,7 @@ export default function LiveTranscription({ theme }) {
                 ) : null}
                 {isListening && (
                   <span
-                    className={`inline-block h-4 w-1.5 ml-0.5 animate-pulse ${theme === "dark" ? "bg-amber-400" : "bg-clay"}`}
+                    className={`inline-block h-4 w-1.5 ml-0.5 animate-pulse ${theme === "dark" ? "bg-clay" : "bg-clay"}`}
                   />
                 )}
               </>

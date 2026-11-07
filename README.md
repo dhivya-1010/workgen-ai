@@ -1,4 +1,4 @@
-# CORTEX 
+# VAZ/CORTEX
 ## The AI Operating System for Everyone
 
 > **Capture. Understand. Organize. Act.**

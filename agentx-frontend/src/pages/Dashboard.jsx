@@ -2,42 +2,23 @@ import { useEffect, useRef, useState } from "react";
 
 const COMMANDS = [
   {
-    match: /^(email|email intelligence|mail|inbox)$/i,
+    match: /^(email|email intelligence|gmail|gmail calendar|mail|inbox)$/i,
     path: "/email",
     reply: "On it!",
   },
   {
-    match: /^(meeting|meetings|meeting intelligence|calendar|schedule)$/i,
-    path: "/meeting",
+    match: /^(study|study buddy|faculty portal|student portal|institution admin)$/i,
+    path: "/study",
     reply: "Let's go!",
   },
   {
     match:
-      /^(organization|organizational knowledge|knowledge|docs|library|notes)$/i,
-    path: "/organization",
+      /^(knowledge hub|institutional knowledge|docs|library|syllabus)$/i,
+    path: "/study",
     reply: "Gotcha!",
   },
   {
-    match: /^(knowledge hub|hub|saved insights|entries)$/i,
-    path: "/knowledge-hub",
-    reply: "On it!",
-  },
-  {
-    match: /^(research|research copilot|analytics|insights|analysis|reports)$/i,
-    path: "/research",
-    reply: "On it!",
-  },
-  {
-    match: /^(journal|journal ai|mood|emotion|stress|focus)$/i,
-    path: "/journal",
-    reply: "Gotcha!",
-  },
-  {
-    match: /^(pipeline|meeting pipeline|live transcript|live transcription)$/i,
-    path: "/pipeline",
-    reply: "Let's go!",
-  },
-  { match: /^(home|dashboard|main)$/i, path: "/", reply: "Back home!" },
+    match: /^(home|dashboard|main)$/i, path: "/", reply: "Back home!" },
 ];
 
 const CASUAL_REPLIES = [
@@ -76,7 +57,7 @@ function resolveReply(transcript) {
   return {
     type: "unknown",
     reply:
-      "Say Email Intelligence, Meeting Intelligence, Organizational Knowledge, Knowledge Hub, Research Copilot, Journal AI, Meeting Pipeline, or Home.",
+      "Say Gmail Calendar, Knowledge Hub, Study Buddy, Faculty Portal, Institution Admin, or Home.",
   };
 }
 

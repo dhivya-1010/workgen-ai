@@ -9,13 +9,7 @@ import {
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import EmailIntelligence from "./pages/EmailIntelligence";
-import InsightAgent from "./pages/InsightAgent";
-import KnowledgeHub from "./pages/KnowledgeHub";
-import JournalAI from "./pages/JournalAI";
-import MeetingIntelligence from "./pages/MeetingIntelligence";
-import LiveTranscription from "./pages/LiveTranscription";
-import OrganizationKnowledge from "./pages/OrganizationKnowledge";
-import ResearchCopilot from "./pages/ResearchCopilot";
+import InstitutionalPlatform from "./pages/InstitutionalPlatform";
 
 const NAV_ITEMS = [
   {
@@ -28,13 +22,12 @@ const NAV_ITEMS = [
     accent: "from-slate-500/20 to-slate-900/10",
   },
   {
-    id: "organization",
-    path: "/organization",
-    label: "Organizational Knowledge",
-    caption: "Official docs & SOPs",
+    id: "study",
+    path: "/study",
+    label: "Institutional Study Platform",
+    caption: "Knowledge + Study Buddy",
     icon: "🗂️",
-    description:
-      "Upload organization policies, handbooks & SOPs. Answers user questions strictly based on uploaded documents.",
+    description: "Knowledge Hub, canonical answers, faculty review, student tutoring, evaluation, and institution administration.",
     accent: "from-emerald-500/30 via-amber-500/15 to-teal-500/10",
   },
   {
@@ -48,66 +41,7 @@ const NAV_ITEMS = [
     accent: "from-amber-500/30 via-yellow-500/15 to-blue-500/10",
   },
   {
-    id: "pipeline",
-    path: "/pipeline",
-    label: "Meeting Pipeline",
-    caption: "Live transcript",
-    icon: "🎙️",
-    description:
-      "Surface real-time speech-to-text output in a stage-friendly panel.",
-    accent: "from-amber-600/30 via-yellow-500/15 to-amber-500/10",
-  },
-  {
-    id: "meeting",
-    path: "/meeting",
-    label: "Meeting Intelligence",
-    caption: "Transcript analysis",
-    icon: "🧠",
-    description:
-      "Turn raw conversations into summaries, decisions, and next steps.",
-    accent: "from-yellow-500/30 via-fuchsia-500/15 to-yellow-500/10",
-  },
-  {
-    id: "research",
-    path: "/research",
-    label: "Research Copilot",
-    caption: "LLM research packs",
-    icon: "🔬",
-    description:
-      "Generate overviews, questions, outlines, and citations for any topic.",
     accent: "from-emerald-500/30 via-amber-500/15 to-teal-500/10",
-  },
-  {
-    id: "knowledge-hub",
-    path: "/knowledge-hub",
-    label: "Knowledge Hub",
-    caption: "Saved insights",
-    icon: "🗃️",
-    description:
-      "Browse and search entries saved into the shared knowledge base.",
-    accent: "from-yellow-500/30 via-amber-500/15 to-amber-600/10",
-  },
-
-
-  {
-    id: "insights",
-    path: "/insights",
-    label: "Insight Agent",
-    caption: "AI insights",
-    icon: "💡",
-    description:
-      "AI-generated insights from Email Intelligence, Meeting Intelligence, Organizational Knowledge, and Analytics. Filter by source and priority.",
-    accent: "from-amber-600/30 via-yellow-500/15 to-purple-500/10",
-  },
-  {
-    id: "journal",
-    path: "/journal",
-    label: "Action Agent",
-    caption: "Todo + emails",
-    icon: "🎯",
-    description:
-      "Manage pending tasks and monitor unread emails in one unified action dashboard.",
-    accent: "from-amber-500/30 via-orange-500/15 to-rose-500/10",
   },
 ];
 
@@ -223,16 +157,7 @@ export default function App() {
               element={<Dashboard theme={theme} onNavigate={navigate} />}
             />
             <Route path="/email" element={pageElement(EmailIntelligence)} />
-            <Route path="/insights" element={pageElement(InsightAgent)} />
-            <Route path="/meeting" element={pageElement(MeetingIntelligence)} />
-            <Route
-              path="/organization"
-              element={pageElement(OrganizationKnowledge)}
-            />
-            <Route path="/knowledge-hub" element={pageElement(KnowledgeHub)} />
-            <Route path="/research" element={pageElement(ResearchCopilot)} />
-            <Route path="/journal" element={pageElement(JournalAI)} />
-            <Route path="/pipeline" element={pageElement(LiveTranscription)} />
+            <Route path="/study" element={pageElement(InstitutionalPlatform)} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

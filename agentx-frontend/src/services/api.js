@@ -249,4 +249,47 @@ export function getInsights() {
   });
 }
 
+export async function uploadInstitutionalDocument(file, metadata = {}) {
+  const formData = new FormData();
+  formData.append("file", file);
+  Object.entries(metadata).forEach(([key, value]) => formData.append(key, value || ""));
+  const response = await fetch(`${API_BASE_URL}/institutional/documents/upload`, { method: "POST", body: formData });
+  const text = await response.text();
+  const data = text ? tryParseJson(text) : null;
+  if (!response.ok) throw new Error(data?.detail || data?.message || text || "Document upload failed");
+  return data;
+}
+
+export function getInstitutionalDashboard() {
+  return request("/institutional/dashboard");
+}
+
+export function getInstitutionalDocuments() {
+  return request("/institutional/documents");
+}
+
+export function deleteInstitutionalDocument(id) {
+  return request(`/institutional/documents/${id}`, { method: "DELETE" });
+}
+
+export function searchInstitutionalKnowledge(query, subject = "", unit = "") {
+  return request("/institutional/search", { method: "POST", body: { query, subject, unit } });
+}
+
+export function createInstitutionalAnswer(payload) {
+  return request("/institutional/answers/generate", { method: "POST", body: payload });
+}
+
+export function getInstitutionalAnswers(status = "") {
+  return request(`/institutional/answers${status ? `?status=${encodeURIComponent(status)}` : ""}`);
+}
+
+export function updateInstitutionalAnswer(id, payload) {
+  return request(`/institutional/answers/${id}`, { method: "PATCH", body: payload });
+}
+
+export function submitInstitutionalAnswer(payload) {
+  return request("/institutional/submissions", { method: "POST", body: payload });
+}
+
 export { API_BASE_URL };

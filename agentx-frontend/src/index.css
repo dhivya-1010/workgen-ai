@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+.field {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 0.9rem;
+  background: rgba(15, 23, 42, 0.32);
+  padding: 0.75rem 0.9rem;
+  color: inherit;
+}
+
+.button-primary,
+.button-secondary {
+  border-radius: 0.9rem;
+  padding: 0.72rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.button-primary {
+  background: #fbbf24;
+  color: #0f172a;
+}
+
+.button-secondary {
+  border: 1px solid rgba(251, 191, 36, 0.55);
+}
+
 @theme {
   --color-clay: #b65c38;
   --color-forest: #2f5d50;

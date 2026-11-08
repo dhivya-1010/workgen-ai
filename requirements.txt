@@ -28,6 +28,8 @@ chromadb>=0.4.0
 sentence-transformers
 pypdf>=3.0.0
 python-docx>=0.8.11
+pdf2image>=1.17.0
+pytesseract>=0.3.13
 
 jinja2==3.1.6
 aiofiles

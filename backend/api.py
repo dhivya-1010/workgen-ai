@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -90,11 +90,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register Organization Knowledge Module routes
-from modules.organization_knowledge.routes import router as org_knowledge_router
-app.include_router(org_knowledge_router)
-
-
 class TranscriptRequest(BaseModel):
     transcript: str
 
@@ -140,6 +135,36 @@ class FollowUpCreateRequest(BaseModel):
 class FollowUpUpdateRequest(BaseModel):
     priority: str | None = None    # "high" | "medium" | "low"
     status: str | None = None      # "pending" | "completed"
+
+
+class StudyAnswerRequest(BaseModel):
+    question: str
+    subject: str = ""
+    unit: str = ""
+    marks: int = 10
+    author: str = ""
+
+
+class StudyAnswerUpdateRequest(BaseModel):
+    answer: str | None = None
+    status: str | None = None
+
+
+class StudySearchRequest(BaseModel):
+    query: str = ""
+    subject: str = ""
+    unit: str = ""
+
+
+class StudentSubmissionRequest(BaseModel):
+    answer_id: str
+    student_answer: str
+
+
+class AcademicResourceRequest(BaseModel):
+    kind: str
+    name: str
+    parent_id: str = ""
 
 
 def _decode_email_body(payload):
@@ -200,6 +225,108 @@ def _load_json_list(path):
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+# ------------------------------------------------------------------
+# Institutional AI Study Platform
+# ------------------------------------------------------------------
+
+@app.get("/institutional/dashboard")
+def institutional_dashboard():
+    from backend.institutional_platform import dashboard
+    return dashboard()
+
+
+@app.post("/institutional/documents/upload")
+async def institutional_upload(
+    file: UploadFile = File(...),
+    subject: str = Form(""),
+    unit: str = Form(""),
+    syllabus: str = Form(""),
+    academic_resource: str = Form(""),
+):
+    from backend.institutional_platform import upload_document
+    content = await file.read()
+    try:
+        return upload_document(
+            file.filename or "document",
+            content,
+            subject=subject,
+            unit=unit,
+            syllabus=syllabus,
+            academic_resource=academic_resource,
+        )
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.get("/institutional/documents")
+def institutional_documents():
+    from backend.institutional_platform import list_documents
+    return {"documents": list_documents()}
+
+
+@app.delete("/institutional/documents/{document_id}")
+def institutional_delete_document(document_id: str):
+    from backend.institutional_platform import delete_document
+    if not delete_document(document_id):
+        raise HTTPException(status_code=404, detail="Document not found")
+    return {"status": "deleted", "id": document_id}
+
+
+@app.post("/institutional/search")
+def institutional_search(payload: StudySearchRequest):
+    from backend.institutional_platform import search
+    return {"results": search(payload.query, subject=payload.subject, unit=payload.unit)}
+
+
+@app.post("/institutional/answers/generate")
+def institutional_generate_answer(payload: StudyAnswerRequest):
+    from backend.institutional_platform import create_answer
+    try:
+        return create_answer(payload.model_dump())
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.get("/institutional/answers")
+def institutional_answers(status: str = ""):
+    from backend.institutional_platform import list_answers
+    return {"answers": list_answers(status)}
+
+
+@app.patch("/institutional/answers/{answer_id}")
+def institutional_update_answer(answer_id: str, payload: StudyAnswerUpdateRequest):
+    from backend.institutional_platform import update_answer
+    try:
+        return update_answer(answer_id, payload.model_dump(exclude_none=True))
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Answer not found") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/institutional/submissions")
+def institutional_submit_answer(payload: StudentSubmissionRequest):
+    from backend.institutional_platform import submit_answer
+    try:
+        return submit_answer(payload.model_dump())
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/institutional/resources")
+def institutional_resource(payload: AcademicResourceRequest):
+    from backend.institutional_platform import _load, _save
+    if payload.kind not in {"institutions", "departments", "courses"}:
+        raise HTTPException(status_code=400, detail="Resource kind must be institutions, departments, or courses.")
+    state = _load()
+    record = {"id": str(__import__("uuid").uuid4()), "name": payload.name.strip(), "parent_id": payload.parent_id}
+    if not record["name"]:
+        raise HTTPException(status_code=400, detail="Resource name is required.")
+    state[payload.kind].append(record)
+    _save(state)
+    return record
 
 
 @app.post("/summarize")
@@ -516,4 +643,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
